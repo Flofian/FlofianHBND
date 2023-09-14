@@ -22,11 +22,18 @@ menu:menu("r", "R Settings")
 menu.r:slider("rRange", "R Range", 950, 800, 1000, 5)
 
 menu:menu("automatic", "Automatic")
+menu.automatic:header("autoHeaderq", "Q")
 menu.automatic:boolean("automaticQ", "Use Q on enemies", true)
 menu.automatic:slider("autoQmintargets", "Min targets to use Q", 2, 1, 2, 1)
 menu.automatic:boolean("autoQamplify", "Use Q on ally auto attacks", true)
 menu.automatic:slider("autoQamplifydirect", "^ Only when hitting x enemies direct", 0, 0, 2, 1)
 menu.automatic:slider("autoQmana", "Min % mana to use Q", 30, 0, 100, 5)
+
+menu.automatic:header("autoHeaderE", "E")
+menu.automatic:boolean("automaticE", "Use E for Anti-Melee", true)
+menu.automatic:dropdown("autoEselfally", "Use E on", 1, {"Self", "Self+Ally"})
+menu.automatic:slider("autoErange", "Max Range", 300, 0, 600, 10)
+menu.automatic.autoErange:set("tooltip", "Press E when enemy closer than x range")
 
 menu:menu("draws", "Drawings")
 menu.draws:boolean("drawOnlyAlive", "Draw Only when Alive", true)

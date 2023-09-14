@@ -31,7 +31,6 @@ local function amplifyAutoattack(spell)
         end
     end
 end
-
 cb.add(cb.cast_finish, amplifyAutoattack)
 
 local function drawRanges()
@@ -55,4 +54,21 @@ local function drawRanges()
     end
 end
 cb.add(cb.draw, drawRanges)
+
+local function antiMelee()
+    if player:spellSlot(2).state ~= 0 then return end
+    if player.mana < player.manaCost2 then return end
+    if menu.automatic.autoEselfally:get() == 1 then
+        for i=0, objManager.enemies_n-1 do
+            local enemy = objManager.enemies[i]
+            if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos)<menu.automatic.autoErange:get() then
+                player:castSpell('self', 2)
+                return
+            end
+        end
+    end
+    
+end
+
+cb.add(cb.tick, antiMelee)
 print('Flofian Sona Loaded!')
