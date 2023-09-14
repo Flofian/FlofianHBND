@@ -14,7 +14,7 @@ menu:menu("q", "Q Settings")
 menu.q:slider("qRange", "Q Range", 750, 700, 800, 5)
 
 menu:menu("w", "W Settings")
-menu.w:slider("wRange", "W Range", 950, 900, 1000, 5)
+menu.w:slider("wRange", "W Range", 975, 900, 1000, 5)
 
 menu:menu("e", "E Settings")
 
