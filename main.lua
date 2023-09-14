@@ -4,12 +4,13 @@ chat.print()
 
 local menu = module.load(header.id, 'menu')
 local common = module.load(header.id, 'common')
-local circle_quality = 32
+local circle_quality = 64
 
 local function amplifyAutoattack(spell)
     if not menu.automatic.autoQamplify:get() then return end
     if not spell.isBasicAttack then return end
     if player:spellSlot(0).state ~= 0 then return end
+    if 100*player.mana/player.maxMana < menu.automatic.autoQmana:get() then return end
     if common.isAlly(spell.owner) and common.isEnemy(spell.target) then
         print('Found Basic Attack: ' .. spell.name)
         print('Target: ' .. spell.target.charName)
@@ -24,12 +25,9 @@ local function amplifyAutoattack(spell)
             end
             print('Direct Enemies: ' .. directenemies)
             if directenemies >= menu.automatic.autoQamplifydirect:get() then
-                if 100*player.mana/player.maxMana > menu.automatic.autoQmana:get() then
-                    print('Amplifying Auto Attack')
-                    player:castSpell('self', 0)
-                end
+                print('Amplifying Auto Attack')
+                player:castSpell('self', 0)
             end
-            
         end
     end
 end
@@ -41,10 +39,19 @@ local function drawRanges()
         return
     end
     if menu.draws.drawPassive:get() then
-        graphics.draw_circle(player.pos, menu.passive.passiveRange:get(), 3, graphics.argb(255,255,0,0), circle_quality)
+        graphics.draw_circle(player.pos, menu.passive.passiveRange:get(), 3, menu.draws.colors.colorPassive:get(), circle_quality)
     end
     if menu.draws.drawQ:get() and (not menu.draws.drawOnlyReady:get() or player:spellSlot(0).state == 0)then
-        graphics.draw_circle(player.pos, menu.q.qRange:get(), 3, graphics.argb(255,0,0,255), circle_quality)
+        graphics.draw_circle(player.pos, menu.q.qRange:get(), 3, menu.draws.colors.colorQ:get(), circle_quality)
+    end
+    if menu.draws.drawW:get() and (not menu.draws.drawOnlyReady:get() or player:spellSlot(1).state == 0)then
+        graphics.draw_circle(player.pos, menu.w.wRange:get(), 3, menu.draws.colors.colorW:get(), circle_quality)
+    end
+    if menu.draws.drawE:get() and (not menu.draws.drawOnlyReady:get() or player:spellSlot(2).state == 0)then
+        graphics.draw_circle(player.pos, menu.passive.passiveRange:get(), 3, menu.draws.colors.colorE:get(), circle_quality)
+    end
+    if menu.draws.drawR:get() and (not menu.draws.drawOnlyReady:get() or player:spellSlot(3).state == 0)then
+        graphics.draw_circle(player.pos, menu.r.rRange:get(), 3, menu.draws.colors.colorR:get(), circle_quality)
     end
 end
 cb.add(cb.draw, drawRanges)
