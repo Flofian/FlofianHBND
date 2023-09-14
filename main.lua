@@ -66,8 +66,27 @@ local function antiMelee()
                 return
             end
         end
+    else
+        allies_in_range = {}
+        for i=0, objManager.allies_n-1 do
+            local ally = objManager.allies[i]
+            if ally.isTargetable and not ally.isDead and player.pos:dist(ally.pos)<menu.passive.passiveRange:get() then
+                table.insert(allies_in_range, ally)
+            end
+        end
+        
+        for i=0, objManager.enemies_n-1 do
+            local enemy = objManager.enemies[i]
+            if enemy.isVisible and enemy.isTargetable and not enemy.isDead then
+                for j=1, #allies_in_range do
+                    if allies_in_range[j].pos:dist(enemy.pos)<menu.automatic.autoErange:get() then
+                        player:castSpell('self', 2)
+                        return
+                    end
+                end
+            end
+        end
     end
-    
 end
 
 cb.add(cb.tick, antiMelee)
