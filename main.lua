@@ -13,9 +13,18 @@ local function amplifyAutoattack(spell)
             print('Target: ' .. spell.target.charName)
             print('Owner: ' .. spell.owner.charName)
             if spell.owner == player or spell.owner.vec3:dist(player.vec3)<menu.passive.passiveRange:get() then
-                print('Amplifying Auto Attack')
-                if 100*player.mana/player.maxMana > menu.automatic.autoQmana:get() then
-                    player:castSpell('self', 0)
+                local directenemies = 0
+                for i=0, objManager.enemies_n-1 do
+                    local enemy = objManager.enemies[i]
+                    if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(spell.target.pos)<menu.q.qRange:get() then
+                        directenemies = directenemies + 1
+                    end
+                end
+                if directenemies >= menu.automatic.autoQamplifydirect:get() then
+                    if 100*player.mana/player.maxMana > menu.automatic.autoQmana:get() then
+                        print('Amplifying Auto Attack')
+                        player:castSpell('self', 0)
+                    end
                 end
                 
             end
