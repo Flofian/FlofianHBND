@@ -6,11 +6,27 @@ local menu = module.load(header.id, 'menu')
 local common = module.load(header.id, 'common')
 local circle_quality = 64
 
+
+local function dump(o)
+    if type(o) == 'table' then
+       local s = '{ '
+       for k,v in pairs(o) do
+          if type(k) ~= 'number' then k = '"'..k..'"' end
+          s = s .. '['..k..'] = ' .. dump(v) .. ',\n'
+       end
+       return s .. '} '
+    else
+        
+       return tostring(o)
+    end
+end
+
 local function amplifyAutoattack(spell)
     if not menu.automatic.autoQamplify:get() then return end
     if not spell.isBasicAttack then return end
     if player:spellSlot(0).state ~= 0 then return end
     if 100*player.mana/player.maxMana < menu.automatic.autoQmana:get() then return end
+    if menu.automatic.onlyQifaery:get() and not common.isAeryReady() then return end
     if common.isAlly(spell.owner) and common.isEnemy(spell.target) then
         print('Found Basic Attack: ' .. spell.name)
         print('Target: ' .. spell.target.charName)
@@ -88,6 +104,25 @@ local function antiMelee()
         end
     end
 end
-
 cb.add(cb.tick, antiMelee)
+
+local function useQ()
+    if player:spellSlot(0).state ~= 0 then return end
+    if player.mana < player.manaCost0 then return end
+    if 100*player.mana/player.maxMana < menu.automatic.autoQmana:get() then return end
+    if not menu.automatic.automaticQ:get() then return end
+    if menu.automatic.onlyQifaery:get() and not common.isAeryReady() then return end
+    local targets = {}
+    for i=0, objManager.enemies_n-1 do
+        local enemy = objManager.enemies[i]
+        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos)<menu.q.qRange:get() then
+            table.insert(targets, enemy)
+        end
+    end
+    if #targets >= menu.automatic.autoQmintargets:get() then
+        player:castSpell('self', 0)
+    end
+end
+cb.add(cb.tick, useQ)
+
 print('Flofian Sona Loaded!')

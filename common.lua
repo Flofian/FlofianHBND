@@ -14,5 +14,12 @@ return {
                 return true
             end
         end
-    end
+    end,
+    
+    isAeryReady = function ()
+        if player.rune:get(0).name == "SummonAery" then
+            return player.buff["assets/perks/styles/sorcery/summonaery/summonaery.lua"]
+        end
+    end,
+     
 }
