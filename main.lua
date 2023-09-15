@@ -31,7 +31,7 @@ local function amplifyAutoattack(spell)
         print('Found Basic Attack: ' .. spell.name)
         print('Target: ' .. spell.target.charName)
         print('Owner: ' .. spell.owner.charName)
-        if spell.owner == player or spell.owner.vec3:dist(player.vec3)<menu.passive.passiveRange:get() then
+        if spell.owner == player or spell.owner.pos:dist(player.pos)<menu.passive.passiveRange:get() then
             local directenemies = 0
             for i=0, objManager.enemies_n-1 do
                 local enemy = objManager.enemies[i]

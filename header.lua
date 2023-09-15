@@ -13,4 +13,9 @@ return {
       background2 = 0xFF000000,    
     },
   },
+  shard = {
+    "main",
+    "common",
+    "menu",
+  }
 }
