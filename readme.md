@@ -9,3 +9,5 @@ TODO:
 - On targeted
 - On Skillshot?
 - ^ Custom delay? (You can cast really late since aura is instant)
+- 
+- Check if Aery owner is me
