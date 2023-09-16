@@ -1,5 +1,6 @@
 chat.clear()
 chat.add('Flofian Sona Loaded')
+chat.add("Note: Most Draws are off by default, since this plugin is not meant to be used alone")
 chat.print()
 
 local menu = module.load(header.id, 'menu')
