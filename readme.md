@@ -1,7 +1,7 @@
 Simple sona plugin, currently only in addition to another plugin
 
-To Use:
-Download FlofianSona.shard from Releases
+To Use:  
+Download FlofianSona.shard from Releases  
 Put it in your Hanbot/League of Legends/Shards folder
 
 
