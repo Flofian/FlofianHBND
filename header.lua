@@ -2,6 +2,7 @@ return {
   id = 'Flofian',
   name = 'Flofian',
   author = "Flofian",
+  description = "Simple Sona Plugin by Flofian",
   load = function()
     return player.charName == "Sona"
   end,
