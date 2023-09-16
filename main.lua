@@ -4,8 +4,9 @@ chat.print()
 
 local menu = module.load(header.id, 'menu')
 local common = module.load(header.id, 'common')
+local evade = module.seek("evade")
 local circle_quality = 64
-
+local bool_to_number={ [true]=1, [false]=0 }
 
 local function dump(o)
     if type(o) == 'table' then
@@ -21,6 +22,40 @@ local function dump(o)
     end
 end
 
+local function wshieldstrength(target)
+    local hashTotalShield = game.fnvhash("TotalShield")
+    local calcs = player:spellSlot(1):calculate(0,hashTotalShield)
+    for i=0, player.rune.size-1 do
+        local rune = player.rune:get(i)
+        if rune.name == "Revitalize" and target.health/target.maxHealth<0.4 then
+            calcs = calcs * 1.1
+        end
+    end
+    for i=0, 5 do
+        if target:itemID(i) == 3065 then
+            calcs = calcs * 1.25
+        end
+    end
+    return calcs
+end
+
+local function whealstrength(target)
+    local hashTotalHeal = game.fnvhash("TotalHeal")
+    local calcs = player:spellSlot(1):calculate(0,hashTotalHeal)
+    for i=0, player.rune.size-1 do
+        local rune = player.rune:get(i)
+        if rune.name == "Revitalize" and target.health/target.maxHealth<0.4 then
+            calcs = calcs * 1.1
+        end
+    end
+    for i=0, 5 do
+        if target:itemID(i) == 3065 then
+            calcs = calcs * 1.25
+        end
+    end
+    return calcs
+end
+
 local function amplifyAutoattack(spell)
     if not menu.automatic.autoQamplify:get() then return end
     if not spell.isBasicAttack then return end
@@ -28,9 +63,9 @@ local function amplifyAutoattack(spell)
     if 100*player.mana/player.maxMana < menu.automatic.autoQmana:get() then return end
     if menu.automatic.onlyQifaery:get() and not common.isAeryReady() then return end
     if common.isAlly(spell.owner) and common.isEnemy(spell.target) then
-        print('Found Basic Attack: ' .. spell.name)
-        print('Target: ' .. spell.target.charName)
-        print('Owner: ' .. spell.owner.charName)
+        --print('Found Basic Attack: ' .. spell.name)
+        --print('Target: ' .. spell.target.charName)
+        --print('Owner: ' .. spell.owner.charName)
         if spell.owner == player or spell.owner.pos:dist(player.pos)<menu.passive.passiveRange:get() then
             local directenemies = 0
             for i=0, objManager.enemies_n-1 do
@@ -39,9 +74,9 @@ local function amplifyAutoattack(spell)
                     directenemies = directenemies + 1
                 end
             end
-            print('Direct Enemies: ' .. directenemies)
+            --print('Direct Enemies: ' .. directenemies)
             if directenemies >= menu.automatic.autoQamplifydirect:get() then
-                print('Amplifying Auto Attack')
+                --print('Amplifying Auto Attack')
                 player:castSpell('self', 0)
             end
         end
@@ -106,7 +141,7 @@ local function antiMelee()
 end
 cb.add(cb.tick, antiMelee)
 
-local function useQ()
+local function autoUseQ()
     if player:spellSlot(0).state ~= 0 then return end
     if player.mana < player.manaCost0 then return end
     if 100*player.mana/player.maxMana < menu.automatic.autoQmana:get() then return end
@@ -123,6 +158,47 @@ local function useQ()
         player:castSpell('self', 0)
     end
 end
-cb.add(cb.tick, useQ)
+cb.add(cb.tick, autoUseQ)
+
+local function autoUseWshield()
+    if not evade then return end
+    if player:spellSlot(1).state ~= 0 then return end
+    if player.mana < player.manaCost1 then return end
+    if 100*player.mana/player.maxMana < menu.automatic.autoWmana:get() then return end
+    if not menu.automatic.automaticW:get() then return end
+    local useShield = false
+    local healself = false
+    local healally = false
+    for i=0, objManager.allies_n-1 do
+        local ally = objManager.allies[i]
+        if ally.isTargetable and not ally.isDead and player.pos:dist(ally.pos)<menu.passive.passiveRange:get() then
+            local shieldsize = wshieldstrength(ally)
+            local incoming_damage = common.getIncomingTargetedDamage(ally, evade)
+            if shieldsize - incoming_damage < shieldsize*menu.automatic.autoWmaxwaste:get()/100 then
+                useShield = true
+                --print(ally.charName, incoming_damage, shieldsize)
+                --player:castSpell("self", 1)
+            end
+        end
+        if ally.isTargetable and not ally.isDead and player.pos:dist(ally.pos)<menu.w.wRange:get() then
+            local healsize = whealstrength(ally)
+            local missingHealth = ally.maxHealth - ally.health
+            --print(ally.charName, missingHealth, healsize)
+            if missingHealth-healsize > missingHealth*menu.automatic.autoWmaxwaste:get()/100 then
+                if ally == player then
+                    healself = true
+                else 
+                    healally = true
+                end
+            end
+        end
+    end
+    local healingatleast = bool_to_number[healself]+bool_to_number[healally]
+    --print(healingatleast .. " heals")
+    if useShield and healingatleast >= menu.automatic.autoWminheals:get() then
+        player:castSpell("self", 1)
+    end
+end
+cb.add(cb.tick, autoUseWshield)
 
 print('Flofian Sona Loaded!')
