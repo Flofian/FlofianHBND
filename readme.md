@@ -21,5 +21,5 @@ TODO:
 - So maybe stuff gets shielded too early
 - Check if Aery owner is me
 - Maybe try to amplify multiple auto attacks?
-
+- 
 - Nami?
