@@ -17,6 +17,7 @@ return {
   shard = {
     "main",
     "common",
-    "menu",
+    "sona/main",
+    "sona/menu",
   }
 }
