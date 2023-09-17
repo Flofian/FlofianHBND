@@ -14,7 +14,12 @@ Features:
 - Anti-Melee E (Self and Ally)
 
 TODO:
+- E Chase Logic
+- Ult Logic
+- Gapcloser/Interrupt DB
 - Maybe Split up W Shield into targeted and skillshot, since incoming dmg has no timing
 - So maybe stuff gets shielded too early
 - Check if Aery owner is me
 - Maybe try to amplify multiple auto attacks?
+
+- Nami?
