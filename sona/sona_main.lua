@@ -344,6 +344,7 @@ end
 local function drawR()
     if not menu.draws.drawRbox:get() then return end
     if a == vec2(0, 0) then return end
+    if not player:spellSlot(3).state == 0 then return end
     graphics.draw_line(a:toGame3D(), b:toGame3D(), 3, menu.draws.colors.colorR:get())
     graphics.draw_line(b:toGame3D(), c:toGame3D(), 3, menu.draws.colors.colorR:get())
     graphics.draw_line(c:toGame3D(), d:toGame3D(), 3, menu.draws.colors.colorR:get())
@@ -378,7 +379,7 @@ local function harassMode()
 end
 
 local function orbModes()
-    if orb.combat.is_active() then
+    if orb.menu.combat.key:get() then
         comboMode()
     elseif orb.menu.hybrid.key:get() then
         harassMode()
