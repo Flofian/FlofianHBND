@@ -343,10 +343,10 @@ end
 
 local function drawR()
     if a == vec2(0, 0) then return end
-    graphics.draw_line(a:toGame3D(), b:toGame3D(), 3, 0xFFFF0000)
-    graphics.draw_line(b:toGame3D(), c:toGame3D(), 3, 0xFF00FF00)
-    graphics.draw_line(c:toGame3D(), d:toGame3D(), 3, 0xFF0000FF)
-    graphics.draw_line(d:toGame3D(), a:toGame3D(), 3, 0xFFFF00FF)
+    graphics.draw_line(a:toGame3D(), b:toGame3D(), 3, menu.draws.colors.colorR:get())
+    graphics.draw_line(b:toGame3D(), c:toGame3D(), 3, menu.draws.colors.colorR:get())
+    graphics.draw_line(c:toGame3D(), d:toGame3D(), 3, menu.draws.colors.colorR:get())
+    graphics.draw_line(d:toGame3D(), a:toGame3D(), 3, menu.draws.colors.colorR:get())
 end
 cb.add(cb.draw, drawR)
 

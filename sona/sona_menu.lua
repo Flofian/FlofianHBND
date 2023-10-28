@@ -67,6 +67,8 @@ menu.draws:boolean("drawQ", "Draw Q Range", false)
 menu.draws:boolean("drawW", "Draw W Range", false)
 menu.draws:boolean("drawE", "Draw E Range", false)
 menu.draws:boolean("drawR", "Draw R Range", false)
+menu.draws:boolean("drawRbox", "Draw R Box (DEBUG)", false)
+
 menu.draws:menu("colors", "Color Settings")
 menu.draws.colors:color("colorPassive", "Passive Color", 255, 0, 0, 255)
 menu.draws.colors:color("colorQ", "Q Color", 0, 0, 255, 255)
