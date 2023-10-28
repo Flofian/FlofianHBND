@@ -342,6 +342,7 @@ local function comboR()
 end
 
 local function drawR()
+    if not menu.draws.drawRbox:get() then return end
     if a == vec2(0, 0) then return end
     graphics.draw_line(a:toGame3D(), b:toGame3D(), 3, menu.draws.colors.colorR:get())
     graphics.draw_line(b:toGame3D(), c:toGame3D(), 3, menu.draws.colors.colorR:get())
