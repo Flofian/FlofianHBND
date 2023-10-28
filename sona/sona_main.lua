@@ -283,19 +283,20 @@ local function countRHits(targetPos)
     for i = 0, objManager.enemies_n - 1 do
         local enemy = objManager.enemies[i]
         if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos)<1300 then
-            local A = player.pos2D + rdir * (r_pred_input.width+enemy.boundingRadius)
-            local D = player.pos2D + ldir * (r_pred_input.width+enemy.boundingRadius)
+            local A = player.pos2D + rdir * (r_pred_input.width+enemy.boundingRadius/2)
+            local D = player.pos2D + ldir * (r_pred_input.width+enemy.boundingRadius/2)
             local B = a + dir * r_pred_input.range()
             local C = d + dir * r_pred_input.range()
             local lrtotal = (r_pred_input.width+enemy.boundingRadius)*2+0.01
             local fbtotal = r_pred_input.range() +0.01
-            local lrdist = enemy.pos2dD:distLine(A,B)+enemy.pos2dD:distLine(C,D)
-            local fbdist = enemy.pos2dD:distLine(A,D)+enemy.pos2dD:distLine(B,C)
+            local lrdist = enemy.pos2D:distLine(A,B)+enemy.pos2D:distLine(C,D)
+            local fbdist = enemy.pos2D:distLine(A,D)+enemy.pos2D:distLine(B,C)
             if lrdist < lrtotal and fbdist < fbtotal then
                 enemycount = enemycount + 1
             end
         end
     end
+    return enemycount
 end
 
 local function comboR()
