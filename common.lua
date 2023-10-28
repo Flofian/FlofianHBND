@@ -22,7 +22,7 @@ return {
         else return true
         end
     end,
-    getIncomingTargetedDamage = function (obj,evade)
+    getIncomingDamage = function (obj,evade)
         if not evade then 
             print('Evade not found')
             return end

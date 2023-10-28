@@ -195,8 +195,8 @@ local function autoUseWshield()
         local ally = objManager.allies[i]
         if ally.isTargetable and not ally.isDead and player.pos:dist(ally.pos) < menu.passive.passiveRange:get() then
             local shieldsize = wshieldstrength(ally)
-            local incoming_damage = common.getIncomingTargetedDamage(ally, evade)
-            if shieldsize - incoming_damage > -shieldsize * menu.automatic.autoWmaxwaste:get() / 100 then
+            local incoming_damage = common.getIncomingDamage(ally, evade)
+            if shieldsize - incoming_damage < shieldsize * menu.automatic.autoWmaxwaste:get() / 100 then
                 useShield = true
                 --print(ally.charName, incoming_damage, shieldsize)
                 --player:castSpell("self", 1)
@@ -218,6 +218,7 @@ local function autoUseWshield()
     local healingatleast = bool_to_number[healself] + bool_to_number[healally]
     --print(healingatleast .. " heals")
     if useShield and healingatleast >= menu.automatic.autoWminheals:get() then
+        print("casting auto w")
         player:castSpell("self", 1)
     end
 end
@@ -252,6 +253,7 @@ local function comboW()
             local missingHealth = ally.maxHealth - ally.health
             --print(ally.charName, missingHealth, healsize)
             if missingHealth - healsize > -healsize * menu.w.comboWmaxwaste:get() / 100 then
+                print("casting combo w")
                 player:castSpell("self", 1)
             end
         end
@@ -344,7 +346,7 @@ end
 local function drawR()
     if not menu.draws.drawRbox:get() then return end
     if a == vec2(0, 0) then return end
-    if not player:spellSlot(3).state == 0 then return end
+    if player:spellSlot(3).state ~= 0 then return end
     graphics.draw_line(a:toGame3D(), b:toGame3D(), 3, menu.draws.colors.colorR:get())
     graphics.draw_line(b:toGame3D(), c:toGame3D(), 3, menu.draws.colors.colorR:get())
     graphics.draw_line(c:toGame3D(), d:toGame3D(), 3, menu.draws.colors.colorR:get())
@@ -361,7 +363,7 @@ end
 local function harrasQ()
     if player:spellSlot(0).state ~= 0 then return end
     if player.mana < player.manaCost0 then return end
-    qTargets = menu.q.harrasQ:get()
+    local qTargets = menu.q.harassQ:get()
     if qTargets == 0 then return end
     local targets = 0
     for i = 0, objManager.enemies_n - 1 do
