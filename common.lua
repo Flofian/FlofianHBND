@@ -19,6 +19,7 @@ return {
     isAeryReady = function ()
         if player.rune:get(0).name == "SummonAery" then
             return player.buff["assets/perks/styles/sorcery/summonaery/summonaery.lua"]
+        else return true
         end
     end,
     getIncomingTargetedDamage = function (obj,evade)

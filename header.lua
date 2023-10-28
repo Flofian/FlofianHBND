@@ -4,6 +4,7 @@ return {
   author = "Flofian",
   description = "Simple Sona Plugin by Flofian",
   load = function()
+    --return true
     return player.charName == "Sona"
   end,
   flag = {
