@@ -218,7 +218,7 @@ local function autoUseWshield()
     local healingatleast = bool_to_number[healself] + bool_to_number[healally]
     --print(healingatleast .. " heals")
     if useShield and healingatleast >= menu.automatic.autoWminheals:get() then
-        print("casting auto w")
+        --print("casting auto w")
         player:castSpell("self", 1)
     end
 end

@@ -24,12 +24,12 @@ return {
     end,
     getIncomingDamage = function (obj,evade)
         if not evade then 
-            print('Evade not found')
+            --print('Evade not found')
             return end
         local ad_damage, ap_damage, true_damage, buff_list = evade.damage.count(obj)
         local incoming_damage = ad_damage + ap_damage + true_damage
         if incoming_damage > 0 then
-            print('Incoming Damage: ' .. incoming_damage)
+            --print('Incoming Damage: ' .. incoming_damage)
         end
         return incoming_damage
     end,
