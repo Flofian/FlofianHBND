@@ -32,6 +32,16 @@ return {
             print('Incoming Damage: ' .. incoming_damage)
         end
         return incoming_damage
+    end,
+    count_enemies_in_range = function(pos, range)
+        local enemies_in_range = {}
+        for i = 0, objManager.enemies_n - 1 do
+            local enemy = objManager.enemies[i]
+            if pos:dist(enemy.pos) < range and enemy.isVisible and enemy.isTargetable and not enemy.isDead then
+                enemies_in_range[#enemies_in_range + 1] = enemy
+            end
+        end
+        return enemies_in_range
     end
     
 }
