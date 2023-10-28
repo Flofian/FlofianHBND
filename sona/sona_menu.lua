@@ -13,14 +13,27 @@ menu.passive:slider("passiveRange", "Passive Range", 380, 350, 400, 5)
 
 menu:menu("q", "Q Settings")
 menu.q:slider("qRange", "Q Range", 750, 700, 800, 5)
+menu.q:header("hqCombo", "Combo Settings")
+menu.q:slider("comboQ", "Min Hits (0 to disable)", 1, 0, 2, 1)
+menu.q:header("hqHarass", "Harass Settings")
+menu.q:slider("harassQ", "Min Hits (0 to disable)", 1, 0, 2, 1)
+
 
 menu:menu("w", "W Settings")
 menu.w:slider("wRange", "W Range", 975, 900, 1000, 5)
+menu.w:header("hwCombo", "Combo Settings")
+menu.w:boolean("comboW", "Use W", true)
+menu.w:slider("comboWmaxwaste", "Maxmimum wasted heal % ", 10,0,100,5)
 
 menu:menu("e", "E Settings")
+menu.e:header("heCombo", "Combo Settings")
+menu.e:slider("comboE", "Affected Champs (0 to disable)", 2, 0, 5, 1)
 
 menu:menu("r", "R Settings")
 menu.r:slider("rRange", "R Range", 950, 800, 1000, 5)
+menu.r:header("hrCombo", "Combo Settings")
+menu.r:slider("comboR", "Min Hits (0 to disable)", 2, 0, 5, 1)
+
 
 menu:menu("automatic", "Automatic")
 menu.automatic:header("autoHeaderq", "Q")
@@ -42,7 +55,7 @@ menu.automatic:slider("autoWmana", "Min % mana to use W", 30, 0, 100, 5)
 
 menu.automatic:header("autoHeaderE", "E")
 menu.automatic:boolean("automaticE", "Use E for Anti-Melee", true)
-menu.automatic:dropdown("autoEselfally", "Use E on", 1, {"Self", "Self+Ally"})
+menu.automatic:dropdown("autoEselfally", "Use E on", 2, { "Self", "Self+Ally" })
 menu.automatic:slider("autoErange", "Max Range", 300, 0, 600, 10)
 menu.automatic.autoErange:set("tooltip", "Press E when enemy closer than x range")
 
@@ -55,11 +68,11 @@ menu.draws:boolean("drawW", "Draw W Range", false)
 menu.draws:boolean("drawE", "Draw E Range", false)
 menu.draws:boolean("drawR", "Draw R Range", false)
 menu.draws:menu("colors", "Color Settings")
-menu.draws.colors:color("colorPassive", "Passive Color",255,0,0,255)
-menu.draws.colors:color("colorQ", "Q Color",0,0,255,255)
-menu.draws.colors:color("colorW", "W Color",0,255,0,255)
-menu.draws.colors:color("colorE", "E Color",255,0,255,255)
-menu.draws.colors:color("colorR", "R Color",255,255,0,255)
+menu.draws.colors:color("colorPassive", "Passive Color", 255, 0, 0, 255)
+menu.draws.colors:color("colorQ", "Q Color", 0, 0, 255, 255)
+menu.draws.colors:color("colorW", "W Color", 0, 255, 0, 255)
+menu.draws.colors:color("colorE", "E Color", 255, 0, 255, 255)
+menu.draws.colors:color("colorR", "R Color", 255, 255, 0, 255)
 
 
 

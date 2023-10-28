@@ -7,7 +7,7 @@ local common = module.load(header.id, 'common')
 local evade = module.seek("evade")
 local circle_quality = 64
 local bool_to_number={ [true]=1, [false]=0 }
-
+local orb = module.internal('orb')
 local function dump(o)
     if type(o) == 'table' then
        local s = '{ '
@@ -174,7 +174,7 @@ local function autoUseWshield()
         if ally.isTargetable and not ally.isDead and player.pos:dist(ally.pos)<menu.passive.passiveRange:get() then
             local shieldsize = wshieldstrength(ally)
             local incoming_damage = common.getIncomingTargetedDamage(ally, evade)
-            if shieldsize - incoming_damage < shieldsize*menu.automatic.autoWmaxwaste:get()/100 then
+            if shieldsize - incoming_damage > -shieldsize*menu.automatic.autoWmaxwaste:get()/100 then
                 useShield = true
                 --print(ally.charName, incoming_damage, shieldsize)
                 --player:castSpell("self", 1)
@@ -184,7 +184,7 @@ local function autoUseWshield()
             local healsize = whealstrength(ally)
             local missingHealth = ally.maxHealth - ally.health
             --print(ally.charName, missingHealth, healsize)
-            if missingHealth-healsize > missingHealth*menu.automatic.autoWmaxwaste:get()/100 then
+            if missingHealth-healsize > -healsize*menu.automatic.autoWmaxwaste:get()/100 then
                 if ally == player then
                     healself = true
                 else 
@@ -200,6 +200,61 @@ local function autoUseWshield()
     end
 end
 cb.add(cb.tick, autoUseWshield)
+
+local function comboQ()
+    if player:spellSlot(0).state ~= 0 then return end
+    if player.mana < player.manaCost0 then return end
+    qTargets = menu.q.comboQ:get()
+    if qTargets == 0 then return end
+    local targets = 0
+    for i=0, objManager.enemies_n-1 do
+        local enemy = objManager.enemies[i]
+        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos)<menu.q.qRange:get() then
+            targets = targets + 1
+        end
+    end
+    if targets>=qTargets then
+        player:castSpell('self', 0)
+    end
+end
+
+local function comboW()
+    if player:spellSlot(1).state ~= 0 then return end
+    if player.mana < player.manaCost1 then return end
+    if not menu.w.comboW:get() then return end
+    maxwaste = menu.w.comboWmaxwaste:get()
+    for i=0, objManager.allies_n-1 do
+        local ally = objManager.allies[i]
+        if ally.isTargetable and not ally.isDead and player.pos:dist(ally.pos)<menu.w.wRange:get() then
+            local healsize = whealstrength(ally)
+            local missingHealth = ally.maxHealth - ally.health
+            print(ally.charName, missingHealth, healsize)
+            if missingHealth-healsize > -healsize*menu.w.comboWmaxwaste:get()/100 then
+                player:castSpell("self", 1)
+            end
+        end
+    end
+end
+
+local function comboMode()
+    comboQ()
+    comboW()
+    
+end
+
+local function harassMode()
+
+end
+
+local function orbModes()
+    if orb.combat.is_active() then
+        comboMode()
+    elseif orb.menu.hybrid.key:get() then
+        harassMode()
+    end
+end
+
+cb.add(cb.tick, orbModes)
 
 print('Flofian Sona Loaded!')
 chat.print('Flofian Sona Loaded!')
