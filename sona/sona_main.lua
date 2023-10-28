@@ -5,11 +5,11 @@ chat.print()
 local menu = module.load(header.id, 'sona/sona_menu')
 local common = module.load(header.id, 'common')
 local evade = module.seek("evade")
-local circle_quality = 64
-local bool_to_number = { [true] = 1, [false] = 0 }
 local orb = module.internal('orb')
 local pred = module.internal("pred");
 local TS = module.internal("TS")
+local circle_quality = 64
+local bool_to_number = { [true] = 1, [false] = 0 }
 
 local a = vec2(0, 0)
 local b = vec2(0, 0)
@@ -322,7 +322,7 @@ local function comboR()
     end
     local target = TS.get_result(target_filter).obj
     if not target then return end
-    print(target.charName)
+    --print(target.charName)
     local pos = pred.linear.get_prediction(r_pred_input, target)
     local dir = (pos.endPos - player.pos2D):norm()
     --local endpoint = player.pos2D+dir*r_pred_input.range
