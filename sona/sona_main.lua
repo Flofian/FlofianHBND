@@ -77,6 +77,7 @@ local function whealstrength(target)
 end
 
 local function amplifyAutoattack(spell)
+    if menu.automatic.autoRecallCheck:get() and player.isRecalling then return end
     if not menu.automatic.autoQamplify:get() then return end
     if not spell.isBasicAttack then return end
     if player:spellSlot(0).state ~= 0 then return end
@@ -90,7 +91,7 @@ local function amplifyAutoattack(spell)
             local directenemies = 0
             for i = 0, objManager.enemies_n - 1 do
                 local enemy = objManager.enemies[i]
-                if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get() then
+                if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get()+bool_to_number[menu.q.qCenterEdge:get()]*enemy.boundingRadius then
                     directenemies = directenemies + 1
                 end
             end
@@ -129,6 +130,7 @@ end
 cb.add(cb.draw, drawRanges)
 
 local function antiMelee()
+    if menu.automatic.autoRecallCheck:get() and player.isRecalling then return end
     if player:spellSlot(2).state ~= 0 then return end
     if player.mana < player.manaCost2 then return end
     if menu.automatic.autoEselfally:get() == 1 then
@@ -164,19 +166,21 @@ end
 cb.add(cb.tick, antiMelee)
 
 local function autoUseQ()
+    if menu.automatic.autoRecallCheck:get() and player.isRecalling then return end
     if player:spellSlot(0).state ~= 0 then return end
     if player.mana < player.manaCost0 then return end
     if 100 * player.mana / player.maxMana < menu.automatic.autoQmana:get() then return end
-    if not menu.automatic.automaticQ:get() then return end
+    local minTargets = menu.automatic.autoQmintargets:get()
+    if minTargets == 0 then return end
     if menu.automatic.onlyQifaery:get() and not common.isAeryReady() then return end
-    local targets = {}
+    local targetcount = 0
     for i = 0, objManager.enemies_n - 1 do
         local enemy = objManager.enemies[i]
-        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get() then
-            table.insert(targets, enemy)
+        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get()+bool_to_number[menu.q.qCenterEdge:get()]*enemy.boundingRadius then
+            targetcount = targetcount + 1
         end
     end
-    if #targets >= menu.automatic.autoQmintargets:get() then
+    if targetcount >= minTargets then
         player:castSpell('self', 0)
     end
 end
@@ -184,6 +188,7 @@ cb.add(cb.tick, autoUseQ)
 
 local function autoUseWshield()
     if not evade then return end
+    if menu.automatic.autoRecallCheck:get() and player.isRecalling then return end
     if player:spellSlot(1).state ~= 0 then return end
     if player.mana < player.manaCost1 then return end
     if 100 * player.mana / player.maxMana < menu.automatic.autoWmana:get() then return end
@@ -232,7 +237,7 @@ local function comboQ()
     local targets = 0
     for i = 0, objManager.enemies_n - 1 do
         local enemy = objManager.enemies[i]
-        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get() then
+        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get()+bool_to_number[menu.q.qCenterEdge:get()]*enemy.boundingRadius then
             targets = targets + 1
         end
     end
