@@ -12,14 +12,9 @@ Features:
 - Auto W for Shield (Self, Ally)
 - ^ Option so it only uses w when it also Heals
 - Anti-Melee E (Self and Ally)
+- Basic Combo Settings
+- R Multi Hit
 
 TODO:
-- E Chase Logic
-- Ult Logic
-- Gapcloser/Interrupt DB
-- Maybe Split up W Shield into targeted and skillshot, since incoming dmg has no timing
-- So maybe stuff gets shielded too early
-- Check if Aery owner is me
-- Maybe try to amplify multiple auto attacks?
-- 
-- Nami?
+- Interrupt DB
+- Check if Aery owner is me?
