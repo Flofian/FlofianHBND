@@ -8,6 +8,7 @@ menu.info:header("info0", "Github Repo: Flofian/FlofianHBND")
 menu.info:header("info4", "Max range = actual range(wiki)")
 menu.info:header("info5", "Lower range as a buffer")
 menu.info:header("info6", "HealShieldPower is not implemented")
+menu.info:boolean("infob", "Show Debug prints", false)
 
 menu:menu("passive", "Passive Settings")
 menu.passive:slider("passiveRange", "Passive Range", 380, 350, 400, 5)

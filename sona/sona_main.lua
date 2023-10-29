@@ -309,6 +309,7 @@ local function altCountRHits(targetPos)
     local ldir = dir:perp1()
     local rdir = dir:perp2()
     local enemycount = 0
+    local enemies = {}
     for i = 0, objManager.enemies_n - 1 do
         local enemy = objManager.enemies[i]
         if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos)<1300 then
@@ -324,11 +325,14 @@ local function altCountRHits(targetPos)
                 local fbdist = predpos.endPos:distLine(A,D)+predpos.endPos:distLine(B,C)
                 if lrdist < lrtotal and fbdist < fbtotal then
                     enemycount = enemycount + 1
+                    if menu.info.inofb:get() then
+                        table.insert(enemies, enemy.charName)
+                    end
                 end
             end
         end
     end
-    return enemycount
+    return enemycount, enemies
 end
 
 local function comboR()
@@ -389,8 +393,13 @@ local function altComboR()
         b = a + dir * r_pred_input.range()
         c = d + dir * r_pred_input.range()
         if pos and pos.startPos:dist(pos.endPos) < r_pred_input.range() then
-            if altCountRHits(pos.endPos) >= menu.r.comboR:get() then
+            local count, enemies = altCountRHits(pos.endPos)
+            if count >= menu.r.comboR:get() then
                 player:castSpell("pos", 3, vec3(pos.endPos.x, mousePos.y, pos.endPos.y))
+                if menu.info.inofb:get() then
+                    chat.print("R Hit: " .. count)
+                    chat.print("Enemies: " .. dump(enemies))
+                end
             end
         end
     end
