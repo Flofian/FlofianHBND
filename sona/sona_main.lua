@@ -372,6 +372,7 @@ local function comboR()
 end
 
 local function altComboR()
+    if common.count_enemies_in_range(player.pos, r_pred_input.range()+100) < menu.r.comboR:get() then return end
     for i=0, objManager.enemies_n-1 do
         local maintarget = objManager.enemies[i]
         local pos = pred.linear.get_prediction(r_pred_input, maintarget)
