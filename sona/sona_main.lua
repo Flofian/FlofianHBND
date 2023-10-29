@@ -230,7 +230,7 @@ cb.add(cb.tick, autoUseWshield)
 local function comboQ()
     if player:spellSlot(0).state ~= 0 then return end
     if player.mana < player.manaCost0 then return end
-    qTargets = menu.q.comboQ:get()
+    local qTargets = menu.q.comboQ:get()
     if qTargets == 0 then return end
     local targets = 0
     for i = 0, objManager.enemies_n - 1 do
@@ -325,7 +325,7 @@ local function altCountRHits(targetPos)
                 local fbdist = predpos.endPos:distLine(A,D)+predpos.endPos:distLine(B,C)
                 if lrdist < lrtotal and fbdist < fbtotal then
                     enemycount = enemycount + 1
-                    if menu.info.inofb:get() then
+                    if menu.info.infob:get() then
                         table.insert(enemies, enemy.charName)
                     end
                 end
@@ -378,6 +378,8 @@ local function comboR()
 end
 
 local function altComboR()
+    if player:spellSlot(3).state ~= 0 then return end
+    if player.mana < player.manaCost3 then return end
     if common.countEnemiesInRange(player.pos, r_pred_input.range()+100) < menu.r.comboR:get() then return end
     for i=0, objManager.enemies_n-1 do
         local maintarget = objManager.enemies[i]
@@ -396,7 +398,7 @@ local function altComboR()
             local count, enemies = altCountRHits(pos.endPos)
             if count >= menu.r.comboR:get() then
                 player:castSpell("pos", 3, vec3(pos.endPos.x, mousePos.y, pos.endPos.y))
-                if menu.info.inofb:get() then
+                if menu.info.infob:get() then
                     chat.print("R Hit: " .. count)
                     chat.print("Enemies: " .. dump(enemies))
                 end
