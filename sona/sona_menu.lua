@@ -1,6 +1,10 @@
 local menu = menu('FlofianSonaMenu', 'Flofian Sona')
 
 menu:menu("info", "Important Information")
+menu.info:header("info1", "Feedback/Suggestion:")
+menu.info:header("info2", "Discord: flofian")
+menu.info:header("info3", "Telegram: @Flofian1")
+menu.info:header("info0", "Github Repo: Flofian/FlofianHBND")
 menu.info:header("info4", "Max range = actual range(wiki)")
 menu.info:header("info5", "Lower range as a buffer")
 menu.info:header("info6", "HealShieldPower is not implemented")
