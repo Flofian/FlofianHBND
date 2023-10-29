@@ -1,4 +1,4 @@
-Simple sona plugin, currently only in addition to another plugin
+Simple sona plugin, but has some cool features
 
 To Use:  
 Download FlofianSona.shard from Releases  
