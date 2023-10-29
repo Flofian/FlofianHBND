@@ -33,7 +33,7 @@ return {
         end
         return incoming_damage
     end,
-    count_enemies_in_range = function(pos, range)
+    countEnemiesInRange = function(pos, range)
         local enemies_in_range = 0
         for i = 0, objManager.enemies_n - 1 do
             local enemy = objManager.enemies[i]
@@ -42,6 +42,17 @@ return {
             end
         end
         return enemies_in_range
+    end,
+    isPlayerUnderTurret = function()
+        for i=0, objManager.turrets.size[TEAM_ENEMY]-1 do
+            local turret = objManager.turrets[TEAM_ENEMY][i]
+            if turret.isAlive and turret.pos:dist(player) < 900 then
+                return true
+            end
+        end
+      
+        return false
     end
+
     
 }

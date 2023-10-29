@@ -73,6 +73,7 @@ local function whealstrength(target)
 end
 
 local function amplifyAutoattack(spell)
+    if menu.automatic.autoQturret:get() and common.isPlayerUnderTurret() then return end
     if menu.automatic.autoRecallCheck:get() and player.isRecalling then return end
     if not menu.automatic.autoQamplify:get() then return end
     if not spell.isBasicAttack then return end
@@ -162,6 +163,7 @@ end
 cb.add(cb.tick, antiMelee)
 
 local function autoUseQ()
+    if menu.automatic.autoQturret:get() and common.isPlayerUnderTurret() then return end
     if menu.automatic.autoRecallCheck:get() and player.isRecalling then return end
     if player:spellSlot(0).state ~= 0 then return end
     if player.mana < player.manaCost0 then return end
@@ -372,7 +374,7 @@ local function comboR()
 end
 
 local function altComboR()
-    if common.count_enemies_in_range(player.pos, r_pred_input.range()+100) < menu.r.comboR:get() then return end
+    if common.countEnemiesInRange(player.pos, r_pred_input.range()+100) < menu.r.comboR:get() then return end
     for i=0, objManager.enemies_n-1 do
         local maintarget = objManager.enemies[i]
         local pos = pred.linear.get_prediction(r_pred_input, maintarget)

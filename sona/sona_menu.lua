@@ -47,6 +47,7 @@ menu.automatic:boolean("autoQamplify", "Use Q on ally auto attacks", true)
 menu.automatic:slider("autoQamplifydirect", "^ Only when hitting x enemies direct", 0, 0, 2, 1)
 menu.automatic:slider("autoQmana", "[Both] Min % mana to use Q", 30, 0, 100, 5)
 menu.automatic:boolean("onlyQifaery", "[Both] Only use Q if aery is ready", true)
+menu.automatic:boolean("autoQturret", "[Both] Dont use Q under enemy turret", true)
 
 menu.automatic:header("autoHeaderW", "W")
 menu.automatic:header("autoHeaderW2", "Incoming Dmg needs Evade module")
