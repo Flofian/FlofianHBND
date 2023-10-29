@@ -306,6 +306,33 @@ local function countRHits(targetPos)
     return enemycount
 end
 
+local function altCountRHits(targetPos)
+    local dir = (targetPos - player.pos2D):norm()
+    local ldir = dir:perp1()
+    local rdir = dir:perp2()
+    local enemycount = 0
+    for i = 0, objManager.enemies_n - 1 do
+        local enemy = objManager.enemies[i]
+        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos)<1300 then
+            local A = player.pos2D + rdir * (r_pred_input.width+enemy.boundingRadius/2)
+            local D = player.pos2D + ldir * (r_pred_input.width+enemy.boundingRadius/2)
+            local B = a + dir * r_pred_input.range()
+            local C = d + dir * r_pred_input.range()
+            local lrtotal = (r_pred_input.width+enemy.boundingRadius)*2+0.01
+            local fbtotal = r_pred_input.range() +0.01
+            local predpos = pred.linear.get_prediction(r_pred_input, enemy)
+            if predpos then
+                local lrdist = predpos.endPos:distLine(A,B)+predpos.endPos:distLine(C,D)
+                local fbdist = predpos.endPos:distLine(A,D)+predpos.endPos:distLine(B,C)
+                if lrdist < lrtotal and fbdist < fbtotal then
+                    enemycount = enemycount + 1
+                end
+            end
+        end
+    end
+    return enemycount
+end
+
 local function comboR()
 
     local function trace_filter(seg, obj)
@@ -348,6 +375,28 @@ local function comboR()
     end
 end
 
+local function altComboR()
+    for i=0, objManager.enemies_n-1 do
+        local maintarget = objManager.enemies[i]
+        local pos = pred.linear.get_prediction(r_pred_input, maintarget)
+        local dir = (pos.endPos - player.pos2D):norm()
+        --local endpoint = player.pos2D+dir*r_pred_input.range
+        --player.pos2D:print()
+        --endpoint:print()
+        local ldir = dir:perp1()
+        local rdir = dir:perp2()
+        a = player.pos2D + rdir * r_pred_input.width
+        d = player.pos2D + ldir * r_pred_input.width
+        b = a + dir * r_pred_input.range()
+        c = d + dir * r_pred_input.range()
+        if pos and pos.startPos:dist(pos.endPos) < r_pred_input.range() then
+            if altCountRHits(pos.endPos) >= menu.r.comboR:get() then
+                player:castSpell("pos", 3, vec3(pos.endPos.x, mousePos.y, pos.endPos.y))
+            end
+        end
+    end
+end
+
 local function drawR()
     if not menu.draws.drawRbox:get() then return end
     if a == vec2(0, 0) then return end
@@ -363,7 +412,7 @@ local function comboMode()
     comboQ()
     comboW()
     comboE()
-    comboR()
+    altComboR()
 end
 local function harrasQ()
     if player:spellSlot(0).state ~= 0 then return end
