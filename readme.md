@@ -18,3 +18,4 @@ Features:
 TODO:
 - Interrupt DB
 - Check if Aery owner is me?
+- Passive Auto Attack Logic?
