@@ -19,7 +19,7 @@ local r_pred_input = {
     range = function() return menu.r.rRange:get() end,
     boundingRadiusMod = 1,
     collision = {
-        wall = false,
+        wall = true,
         minion = false,
         hero = false,
     },
@@ -254,7 +254,7 @@ local function comboW()
             local missingHealth = ally.maxHealth - ally.health
             --print(ally.charName, missingHealth, healsize)
             if missingHealth - healsize > -healsize * menu.w.comboWmaxwaste:get() / 100 then
-                print("casting combo w")
+                --print("casting combo w")
                 player:castSpell("self", 1)
             end
         end
