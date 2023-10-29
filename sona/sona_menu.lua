@@ -1,9 +1,6 @@
 local menu = menu('FlofianSonaMenu', 'Flofian Sona')
 
 menu:menu("info", "Important Information")
-menu.info:header("info1", "This Plugin is only in addition to other")
-menu.info:header("info2", "It does not use R")
-menu.info:header("info3", "Currently only helps for using Q passive")
 menu.info:header("info4", "Max range = actual range(wiki)")
 menu.info:header("info5", "Lower range as a buffer")
 menu.info:header("info6", "HealShieldPower is not implemented")

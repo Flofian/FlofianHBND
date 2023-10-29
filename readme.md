@@ -16,6 +16,8 @@ Features:
 - R Multi Hit
 
 TODO:
+- Q rarely misses?
+- FPS Issues? Probably R logic
 - Interrupt DB
 - Check if Aery owner is me?
 - Passive Auto Attack Logic?
