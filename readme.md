@@ -21,3 +21,5 @@ TODO:
 - Interrupt DB
 - Check if Aery owner is me?
 - Passive Auto Attack Logic?
+- Auto R Logic?
+- Speed up ally for evading Skillshots
