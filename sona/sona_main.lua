@@ -139,7 +139,7 @@ local function antiMelee()
             end
         end
     else
-        allies_in_range = {}
+        local allies_in_range = {}
         for i = 0, objManager.allies_n - 1 do
             local ally = objManager.allies[i]
             if ally.isTargetable and not ally.isDead and player.pos:dist(ally.pos) < menu.passive.passiveRange:get() then
@@ -248,16 +248,33 @@ local function comboW()
     if player:spellSlot(1).state ~= 0 then return end
     if player.mana < player.manaCost1 then return end
     if not menu.w.comboW:get() then return end
-    maxwaste = menu.w.comboWmaxwaste:get()
-    for i = 0, objManager.allies_n - 1 do
-        local ally = objManager.allies[i]
-        if ally.isTargetable and not ally.isDead and player.pos:dist(ally.pos) < menu.w.wRange:get() then
-            local healsize = whealstrength(ally)
-            local missingHealth = ally.maxHealth - ally.health
-            --print(ally.charName, missingHealth, healsize)
-            if missingHealth - healsize > -healsize * menu.w.comboWmaxwaste:get() / 100 then
-                --print("casting combo w")
-                player:castSpell("self", 1)
+    if menu.w.comboWmode:get() == 1 then
+        local maxwaste = menu.w.comboWmaxwaste:get()
+        for i = 0, objManager.allies_n - 1 do
+            local ally = objManager.allies[i]
+            if ally.isTargetable and not ally.isDead and player.pos:dist(ally.pos) < menu.w.wRange:get() then
+                local healsize = whealstrength(ally)
+                local missingHealth = ally.maxHealth - ally.health
+                --print(ally.charName, missingHealth, healsize)
+                if missingHealth - healsize > -healsize * menu.w.comboWmaxwaste:get() / 100 then
+                    --print("casting combo w")
+                    player:castSpell("self", 1)
+                end
+            end
+        end
+    else
+        if player.health/player.maxHealth < menu.w.comboWunder.Sona:get() / 100 then
+            player:castSpell("self", 1)
+            return
+        end
+        for i = 0, objManager.allies_n - 1 do
+            local ally = objManager.allies[i]
+            if ally.isTargetable and not ally.isDead and player.pos:dist(ally.pos) < menu.w.wRange:get() then
+                local hp = menu.w.comboWunder[ally.charName]:get()
+                if ally.health / ally.maxHealth < hp / 100 then
+                    player:castSpell("self", 1)
+                    return
+                end
             end
         end
     end
