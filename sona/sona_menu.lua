@@ -14,7 +14,7 @@ menu:menu("passive", "Passive Settings")
 menu.passive:slider("passiveRange", "Passive Range", 380, 350, 400, 5)
 
 menu:menu("q", "Q Settings")
-menu.q:slider("qRange", "Q Range", 750, 700, 800, 5)
+menu.q:slider("qRange", "Q Range", 800, 700, 825, 5)
 menu.q:header("hqCombo", "Combo Settings")
 menu.q:slider("comboQ", "Min Hits (0 to disable)", 1, 0, 2, 1)
 menu.q:header("hqHarass", "Harass Settings")
