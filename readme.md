@@ -15,6 +15,8 @@ Features:
 - Anti-Melee E (Self and Ally)
 - Basic Combo Settings
 - R Multi Hit
+- Auto R X Enemies
+- Semi R
 
 TODO:
 - Q rarely misses?
@@ -22,5 +24,4 @@ TODO:
 - Interrupt DB
 - Check if Aery owner is me?
 - Passive Auto Attack Logic?
-- Auto R Logic?
 - Speed up ally for evading Skillshots
