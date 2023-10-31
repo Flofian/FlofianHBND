@@ -88,7 +88,7 @@ local function amplifyAutoattack(spell)
             local directenemies = 0
             for i = 0, objManager.enemies_n - 1 do
                 local enemy = objManager.enemies[i]
-                if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get() + bool_to_number[menu.q.qCenterEdge:get()] * enemy.boundingRadius then
+                if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get()then
                     directenemies = directenemies + 1
                 end
             end
@@ -174,7 +174,7 @@ local function autoUseQ()
     local targetcount = 0
     for i = 0, objManager.enemies_n - 1 do
         local enemy = objManager.enemies[i]
-        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get() + bool_to_number[menu.q.qCenterEdge:get()] * enemy.boundingRadius then
+        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get() then
             targetcount = targetcount + 1
         end
     end
@@ -235,7 +235,7 @@ local function comboQ()
     local targets = 0
     for i = 0, objManager.enemies_n - 1 do
         local enemy = objManager.enemies[i]
-        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get() + bool_to_number[menu.q.qCenterEdge:get()] * enemy.boundingRadius then
+        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get()then
             targets = targets + 1
         end
     end

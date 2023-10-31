@@ -14,8 +14,6 @@ menu:menu("passive", "Passive Settings")
 menu.passive:slider("passiveRange", "Passive Range", 380, 350, 400, 5)
 
 menu:menu("q", "Q Settings")
-menu.q:boolean("qCenterEdge", "Use Center-Edge Range", true)
-menu.q.qCenterEdge:set("tooltip", "This is the actual range according to wiki")
 menu.q:slider("qRange", "Q Range", 750, 700, 800, 5)
 menu.q:header("hqCombo", "Combo Settings")
 menu.q:slider("comboQ", "Min Hits (0 to disable)", 1, 0, 2, 1)
