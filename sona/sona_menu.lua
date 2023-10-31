@@ -44,6 +44,7 @@ menu:menu("r", "R Settings")
 menu.r:slider("rRange", "R Range", 950, 800, 1000, 5)
 menu.r:header("hrCombo", "Combo Settings")
 menu.r:slider("comboR", "Min Hits (0 to disable)", 2, 0, 5, 1)
+menu.r:dropdown("rPredSize", "R Prediction Size", 2, {"Small", "Medium", "Large"})
 
 
 menu:menu("automatic", "Automatic")
@@ -71,6 +72,9 @@ menu.automatic:boolean("automaticE", "Use E for Anti-Melee", true)
 menu.automatic:dropdown("autoEselfally", "Use E on", 2, { "Self", "Self+Ally" })
 menu.automatic:slider("autoErange", "Max Range", 300, 0, 600, 10)
 menu.automatic.autoErange:set("tooltip", "Press E when enemy closer than x range")
+
+menu.automatic:header("autoHeaderR", "R")
+menu.automatic:slider("autoRmin", "Min enemies to use R (0 to disable)", 4, 0, 5, 1)
 
 menu:menu("draws", "Drawings")
 menu.draws:boolean("drawOnlyAlive", "Draw Only when Alive", true)
