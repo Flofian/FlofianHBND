@@ -43,6 +43,16 @@ return {
         end
         return enemies_in_range
     end,
+    countAlliesInRange = function(pos, range)
+        local count = 0
+        for i = 0, objManager.allies_n - 1 do
+            local ally = objManager.allies[i]
+            if pos:dist(ally.pos) < range and ally.isVisible and ally.isTargetable and not ally.isDead then
+                count = count + 1
+            end
+        end
+        return count
+    end,
     isPlayerUnderTurret = function()
         for i=0, objManager.turrets.size[TEAM_ENEMY]-1 do
             local turret = objManager.turrets[TEAM_ENEMY][i]
@@ -52,7 +62,8 @@ return {
         end
       
         return false
-    end
-
-    
+    end,
+    isValidTarget = function (obj)
+        return obj and obj.isVisible and not obj.isDead and obj.isTargetable
+    end,
 }

@@ -27,13 +27,13 @@ menu:menu("w", "W Settings")
 menu.w:slider("wRange", "W Range", 975, 900, 1000, 5)
 menu.w:header("hwCombo", "Combo Settings")
 menu.w:boolean("comboW", "Use W", true)
-menu.w:dropdown("comboWmode", "W Mode", 2, {"Max Waste", "Under X % HP"})
-menu.w:slider("comboWmaxwaste", "Maximum wasted heal % ", 10,0,100,5)
+menu.w:dropdown("comboWmode", "W Mode", 2, { "Max Waste", "Under X % HP" })
+menu.w:slider("comboWmaxwaste", "Maximum wasted heal % ", 10, 0, 100, 5)
 menu.w:menu("comboWunder", "Under X % HP")
-menu.w.comboWunder:slider("Sona", "Sona", 60,0,100,5)
+menu.w.comboWunder:slider("Sona", "Sona", 60, 0, 100, 5)
 for i = 1, objManager.allies_n - 1 do
     local ally = objManager.allies[i]
-    menu.w.comboWunder:slider(ally.charName, ally.charName, 75,0,100,5)
+    menu.w.comboWunder:slider(ally.charName, ally.charName, 75, 0, 100, 5)
 end
 
 menu:menu("e", "E Settings")
@@ -44,8 +44,9 @@ menu:menu("r", "R Settings")
 menu.r:slider("rRange", "R Range", 950, 800, 1000, 5)
 menu.r:header("hrCombo", "Combo Settings")
 menu.r:slider("comboR", "Min Hits (0 to disable)", 2, 0, 5, 1)
-menu.r:dropdown("rPredSize", "R Prediction Size", 2, {"Small", "Medium", "Large"})
-
+menu.r:dropdown("rPredSize", "R Prediction Size", 2, { "Small", "Medium", "Large" })
+menu.r:keybind("semiR", "Semi R Key", "T", nil)
+menu.r:slider("semiRmin", "Semi R min Hits", 2, 1, 5, 1)
 
 menu:menu("automatic", "Automatic")
 menu.automatic:boolean("autoRecallCheck", "Dont Use anything while recalling", true)
@@ -75,6 +76,8 @@ menu.automatic.autoErange:set("tooltip", "Press E when enemy closer than x range
 
 menu.automatic:header("autoHeaderR", "R")
 menu.automatic:slider("autoRmin", "Min enemies to use R (0 to disable)", 4, 0, 5, 1)
+menu.automatic:slider("autoRminAlly", "Min Allies in Range (0 to disable)", 1, 0, 4, 1)
+
 
 menu:menu("draws", "Drawings")
 menu.draws:boolean("drawOnlyAlive", "Draw Only when Alive", true)

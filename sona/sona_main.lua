@@ -88,7 +88,7 @@ local function amplifyAutoattack(spell)
             local directenemies = 0
             for i = 0, objManager.enemies_n - 1 do
                 local enemy = objManager.enemies[i]
-                if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get()+bool_to_number[menu.q.qCenterEdge:get()]*enemy.boundingRadius then
+                if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get() + bool_to_number[menu.q.qCenterEdge:get()] * enemy.boundingRadius then
                     directenemies = directenemies + 1
                 end
             end
@@ -174,7 +174,7 @@ local function autoUseQ()
     local targetcount = 0
     for i = 0, objManager.enemies_n - 1 do
         local enemy = objManager.enemies[i]
-        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get()+bool_to_number[menu.q.qCenterEdge:get()]*enemy.boundingRadius then
+        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get() + bool_to_number[menu.q.qCenterEdge:get()] * enemy.boundingRadius then
             targetcount = targetcount + 1
         end
     end
@@ -235,7 +235,7 @@ local function comboQ()
     local targets = 0
     for i = 0, objManager.enemies_n - 1 do
         local enemy = objManager.enemies[i]
-        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get()+bool_to_number[menu.q.qCenterEdge:get()]*enemy.boundingRadius then
+        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < menu.q.qRange:get() + bool_to_number[menu.q.qCenterEdge:get()] * enemy.boundingRadius then
             targets = targets + 1
         end
     end
@@ -263,7 +263,7 @@ local function comboW()
             end
         end
     else
-        if player.health/player.maxHealth < menu.w.comboWunder.Sona:get() / 100 then
+        if player.health / player.maxHealth < menu.w.comboWunder.Sona:get() / 100 then
             player:castSpell("self", 1)
             return
         end
@@ -305,18 +305,18 @@ local function countRHits(targetPos)
     local enemies = {}
     for i = 0, objManager.enemies_n - 1 do
         local enemy = objManager.enemies[i]
-        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos)<1300 then
-            local predSizeFactor = (menu.r.rPredSize:get()-1)/2
-            local A = player.pos2D + rdir * (r_pred_input.width+enemy.boundingRadius*predSizeFactor)
-            local D = player.pos2D + ldir * (r_pred_input.width+enemy.boundingRadius*predSizeFactor)
+        if enemy.isVisible and enemy.isTargetable and not enemy.isDead and player.pos:dist(enemy.pos) < 1300 then
+            local predSizeFactor = (menu.r.rPredSize:get() - 1) / 2
+            local A = player.pos2D + rdir * (r_pred_input.width + enemy.boundingRadius * predSizeFactor)
+            local D = player.pos2D + ldir * (r_pred_input.width + enemy.boundingRadius * predSizeFactor)
             local B = a + dir * r_pred_input.range()
             local C = d + dir * r_pred_input.range()
-            local lrtotal = (r_pred_input.width+enemy.boundingRadius)*2+0.01
-            local fbtotal = r_pred_input.range() +0.01
+            local lrtotal = (r_pred_input.width + enemy.boundingRadius) * 2 + 0.01
+            local fbtotal = r_pred_input.range() + 0.01
             local predpos = pred.linear.get_prediction(r_pred_input, enemy)
             if predpos then
-                local lrdist = predpos.endPos:distLine(A,B)+predpos.endPos:distLine(C,D)
-                local fbdist = predpos.endPos:distLine(A,D)+predpos.endPos:distLine(B,C)
+                local lrdist = predpos.endPos:distLine(A, B) + predpos.endPos:distLine(C, D)
+                local fbdist = predpos.endPos:distLine(A, D) + predpos.endPos:distLine(B, C)
                 if lrdist < lrtotal and fbdist < fbtotal then
                     enemycount = enemycount + 1
                     if menu.info.infob:get() then
@@ -333,8 +333,8 @@ end
 local function comboR()
     if player:spellSlot(3).state ~= 0 then return end
     if player.mana < player.manaCost3 then return end
-    if common.countEnemiesInRange(player.pos, r_pred_input.range()+100) < menu.r.comboR:get() then return end
-    for i=0, objManager.enemies_n-1 do
+    if common.countEnemiesInRange(player.pos, r_pred_input.range() + 100) < menu.r.comboR:get() then return end
+    for i = 0, objManager.enemies_n - 1 do
         local maintarget = objManager.enemies[i]
         local pos = pred.linear.get_prediction(r_pred_input, maintarget)
         local dir = (pos.endPos - player.pos2D):norm()
@@ -411,8 +411,11 @@ local function autoR()
     if minTargets == 0 then return end
     if player:spellSlot(3).state ~= 0 then return end
     if player.mana < player.manaCost3 then return end
-    if common.countEnemiesInRange(player.pos, r_pred_input.range()+100) < minTargets then return end
-    for i=0, objManager.enemies_n-1 do
+    local minAllies = menu.automatic.autoRminAlly:get()
+    local allyCount = common.countAlliesInRange(player.pos, 800)
+    if allyCount< minAllies and minAllies ~=0 then return end
+    if common.countEnemiesInRange(player.pos, r_pred_input.range() + 100) < minTargets then return end
+    for i = 0, objManager.enemies_n - 1 do
         local maintarget = objManager.enemies[i]
         local pos = pred.linear.get_prediction(r_pred_input, maintarget)
         if pos and pos.startPos:dist(pos.endPos) < r_pred_input.range() then
@@ -426,9 +429,31 @@ local function autoR()
             end
         end
     end
-
 end
 cb.add(cb.tick, autoR)
+
+local function semiR()
+    if not menu.r.semiR:get() then return end
+    local minTargets = menu.r.semiRmin:get()
+    if player:spellSlot(3).state ~= 0 then return end
+    if player.mana < player.manaCost3 then return end
+    if common.countEnemiesInRange(player.pos, r_pred_input.range() + 100) < minTargets then return end
+    for i = 0, objManager.enemies_n - 1 do
+        local maintarget = objManager.enemies[i]
+        local pos = pred.linear.get_prediction(r_pred_input, maintarget)
+        if pos and pos.startPos:dist(pos.endPos) < r_pred_input.range() then
+            local count, enemies = countRHits(pos.endPos)
+            if count >= minTargets then
+                player:castSpell("pos", 3, vec3(pos.endPos.x, mousePos.y, pos.endPos.y))
+                if menu.info.infob:get() then
+                    chat.print("SEMI R Hit: " .. count)
+                    chat.print("Enemies: " .. dump(enemies))
+                end
+            end
+        end
+    end
+end
+cb.add(cb.tick, semiR)
 
 print('Flofian Sona Loaded!')
 chat.print('Flofian Sona Loaded!')
