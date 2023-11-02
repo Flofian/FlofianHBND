@@ -5,7 +5,7 @@ return {
   description = "Simple Sona Plugin by Flofian",
   load = function()
     --return true
-    return player.charName == "Sona" --or player.charName == "Zyra"
+    return player.charName == "Sona" or player.charName == "Zyra"
   end,
   flag = {
     text = "Flofian",
