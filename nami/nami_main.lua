@@ -28,6 +28,7 @@ local function autoEOnSpell(spell)
     if spell.owner.pos:dist(player.pos) > 800 then return end
     --chat.print(spell.name)
     --chat.print(spell.owner.charName .. " " .. spell.slot)
+    if not pcall(menu.e[spell.owner.charName].use["get"]) then return end -- this should fix new champs during game like soraka bot in nexus blitz
     if not menu.e.eOnSpells:get() then return end
     if not menu.e[spell.owner.charName].use:get() then return end
     if menu.e.eSpellTargetOverwrite:get() and not spell.hasTarget then return end
@@ -41,6 +42,9 @@ local function autoEOnSpell(spell)
         --chat.print("Using on " .. spell.owner.charName .. " " .. spellSlot)
         local target = spell.owner
         player:castSpell("obj", 2, target)
+        if menu.info.debug:get() then
+            chat.print("Using E on " .. spell.owner.charName .. " " .. spellSlot)
+        end
     else
         --chat.print("Not using on " .. spell.owner.charName .. " " .. spellSlot)
     end
