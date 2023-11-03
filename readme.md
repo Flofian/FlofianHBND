@@ -1,17 +1,18 @@
 To Use:  
 Download FlofianHBND.shard from Releases  
 Put it in your Hanbot/League of Legends/Shards folder
+They have neat features other plugins dont have (marked with ++)
 
 ## Champ List:
 ### Sona:
 Features:
 - Auto Q direct (1 or 2 targets)
-- Auto Q aura to amplify auto attacks (Self/Ally, also include direct Hit)
+- ++Auto Q aura to amplify auto attacks (Self/Ally, also include direct Hit)
 - Note: Currently only basic attacks, no abilities that apply on-hit effects
 - Use only when Aery is ready
 - Auto W for Shield (Self, Ally)
 - ^ Option so it only uses w when it also Heals
-- Anti-Melee E (Self and Ally)
+- ++Anti-Melee E (Self and Ally)
 - Basic Combo Settings
 - R Multi Hit
 - Auto R X Enemies
@@ -19,8 +20,10 @@ Features:
 
 ### Nami:
 Features:
-- Auto E on Spells/Auto Attacks
-- Distinguish Targeted/Skillshot
+- ++Auto E on Spells/Auto Attacks
+- ++Distinguish Targeted/Skillshot
+- NOT A STANDALONE PLUGIN YET
+- -> Use only in addition to some other plugin e.g. kornis
 
 ## TODO:
 ### Sona:
