@@ -2,7 +2,7 @@ To Use:
 Download FlofianHBND.shard from Releases  
 Put it in your Hanbot/League of Legends/Shards folder
 
-# # Champ List:
+## Champ List:
 # Sona
 Features:
 - Auto Q direct (1 or 2 targets)
