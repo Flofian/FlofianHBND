@@ -3,7 +3,7 @@ Download FlofianHBND.shard from Releases
 Put it in your Hanbot/League of Legends/Shards folder
 
 ## Champ List:
-### Sona
+### Sona:
 Features:
 - Auto Q direct (1 or 2 targets)
 - Auto Q aura to amplify auto attacks (Self/Ally, also include direct Hit)
@@ -17,7 +17,7 @@ Features:
 - Auto R X Enemies
 - Semi R
 
-### Nami
+### Nami:
 Features:
 - Auto E on Spells/Auto Attacks
 - Distinguish Targeted/Skillshot
