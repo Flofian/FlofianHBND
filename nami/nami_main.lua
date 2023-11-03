@@ -21,6 +21,9 @@ end
 
 
 local function autoEOnSpell(spell)
+    if menu.automatic.recall:get() and player.isRecalling then return end
+    if player:spellSlot(2).state ~= 0 then return end
+    if player.mana < player.manaCost2 then return end
     if spell.owner.type ~= TYPE_HERO or spell.owner.team ~= TEAM_ALLY then return end
     if spell.owner.pos:dist(player.pos) > 800 then return end
     --chat.print(spell.name)

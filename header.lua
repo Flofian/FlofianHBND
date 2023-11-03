@@ -22,5 +22,7 @@ return {
     "common",
     "sona/sona_main",
     "sona/sona_menu",
+    "nami/nami_menu",
+    "nami/nami_main",
   }
 }

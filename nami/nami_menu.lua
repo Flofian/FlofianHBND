@@ -21,4 +21,6 @@ for i = 0, objManager.allies_n - 1 do
     menu.e[ally.charName]:boolean("R", "R", ally:spellSlot(3).targetingType == targetUnit)
 end
 
+menu:menu("automatic", "Automatic")
+menu.automatic:boolean("recall", "Dont use anything while recalling", true)
 return menu
