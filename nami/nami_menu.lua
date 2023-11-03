@@ -50,6 +50,7 @@ menu:menu("e", "E Settings")
 menu.e:boolean("eOnSpells", "Use E on spells", true)
 menu.e:boolean("eSpellTargetOverwrite", "OVERWRITE Only E on targetted Spells", false)
 menu.e.eSpellTargetOverwrite:set("tooltip", "By default, only targeted Spells are enabled in champ settings")
+menu.e:boolean("eSpellAAOverwrite", "OVERWRITE Only E on Autoattacks", false)
 local targetUnit = 1
 for i = 0, objManager.allies_n - 1 do
     local ally = objManager.allies[i]
@@ -66,6 +67,7 @@ menu:menu("automatic", "Automatic")
 menu.automatic:boolean("recall", "Dont use anything while recalling", true)
 menu.automatic:header("hAutoQ", "Auto Q")
 menu.automatic:dropdown("autoQCC", "Use Q on CC Mode", 2, { "Off", "Predicton", "Buff" })
+menu.automatic:dropdown("autoQGapclose" , "Use Q on Gapclose", 3, { "Off", "Simple (NOT TESTED)", "Prediction" })
 
 
 

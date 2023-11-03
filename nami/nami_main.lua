@@ -97,6 +97,7 @@ local function autoEOnSpell(spell)
     if not menu.e.eOnSpells:get() then return end
     if not menu.e[spell.owner.charName].use:get() then return end
     if menu.e.eSpellTargetOverwrite:get() and not spell.hasTarget then return end
+    if menu.e.eSpellAAOverwrite:get() and not spell.isBasicAttack then return end
     local spellSlot = spellSlotToLetter(spell)
     if spellSlot == -1 then return end
     if spell.hasTarget and not (spell.target.type == TYPE_HERO and spell.target.team == TEAM_ENEMY) then
@@ -136,7 +137,7 @@ local function autoWHeal()
 end
 cb.add(cb.tick, autoWHeal)
 
-local function AutoQTraceFilter(seg, obj)
+local function AutoQCCTraceFilter(seg, obj)
     if seg.startPos:dist(seg.endPos) > 850 then return false end
 
     if pred.trace.circular.hardlock(SpellQ, seg, obj) then
@@ -148,11 +149,11 @@ local function AutoQTraceFilter(seg, obj)
     return false
 end
 
-local function AutoQTargetFilter(res, obj, dist)
+local function AutoQCCTargetFilter(res, obj, dist)
     if dist > 1100 then return false end
     local seg = pred.circular.get_prediction(SpellQ, obj)
     if not seg then return false end
-    if not AutoQTraceFilter(seg, obj) then return false end
+    if not AutoQCCTraceFilter(seg, obj) then return false end
 
     res.pos = seg.endPos
     return true
@@ -179,7 +180,7 @@ local function autoQCC()
         end
     end
     if mode == 2 then
-        local res = TS.get_result(AutoQTargetFilter)
+        local res = TS.get_result(AutoQCCTargetFilter)
         if res.pos then
             player:castSpell("pos", 0, vec3(res.pos.x, mousePos.y, res.pos.y))
             if menu.info.debug:get() then
@@ -190,6 +191,61 @@ local function autoQCC()
     end
 end
 cb.add(cb.tick, autoQCC)
+
+local function AutoQGapcloseTraceFilter(seg, obj)
+    if seg.startPos:dist(seg.endPos) > 950 then return false end
+    if obj.path.isActive and obj.path.isDashing then
+        return true
+    end
+end
+
+local function AutoQGapcloseTargetFilter(res, obj, dist)
+    if dist > 1100 then return false end
+    local seg = pred.circular.get_prediction(SpellQ, obj)
+    if not seg then return false end
+    if not AutoQGapcloseTraceFilter(seg, obj) then return false end
+
+    res.pos = seg.endPos
+    return true
+end
+
+local function autoQGapclose()
+    if menu.automatic.recall:get() and player.isRecalling then return end
+    if player:spellSlot(0).state ~= 0 then return end
+    if player.mana < player.manaCost0 then return end
+    local mode = menu.automatic.autoQGapclose:get()
+    if mode == 1 then return end
+    if mode == 2 then
+        local seg = {}
+        local target = TS.get_result(
+            function(res, obj, dist)
+                if dist <= SpellQ.range and obj.path.isActive and obj.path.isDashing then
+                    res.obj = obj
+                    return true
+                end
+            end
+        ).obj
+        if target then
+            local pred_pos = pred.core.lerp(target.path, SpellQ.delay, target.path.dashSpeed)
+            if pred_pos and pred_pos:dist(player.path.serverPos2D) <= SpellQ.range then
+                seg.startPos = player.path.serverPos2D
+                seg.endPos = vec2(pred_pos.x, pred_pos.y)
+                player:castSpell("pos", 2, vec3(pred_pos.x, target.y, pred_pos.y))
+            end
+        end
+    end
+    if mode == 3 then
+        local res = TS.get_result(AutoQGapcloseTargetFilter)
+        if res.pos then
+            player:castSpell("pos", 0, vec3(res.pos.x, mousePos.y, res.pos.y))
+            if menu.info.debug:get() then
+                chat.print("Auto Using Q Gapclose Prediction") --on " .. res.charName)
+            end
+            return
+        end
+    end
+end
+cb.add(cb.tick, autoQGapclose)
 
 local function interrupt(spell)
     if menu.automatic.recall:get() and player.isRecalling then return end
@@ -223,6 +279,8 @@ local function interrupt(spell)
     end
 end
 cb.add(cb.spell, interrupt)
+
+
 
 
 chat.print("Loaded Flofian Nami")
