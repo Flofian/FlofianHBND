@@ -3,7 +3,7 @@ Download FlofianHBND.shard from Releases
 Put it in your Hanbot/League of Legends/Shards folder
 
 ## Champ List:
-# Sona
+### Sona
 Features:
 - Auto Q direct (1 or 2 targets)
 - Auto Q aura to amplify auto attacks (Self/Ally, also include direct Hit)
@@ -17,19 +17,25 @@ Features:
 - Auto R X Enemies
 - Semi R
 
-# Nami
+### Nami
 Features:
 - Auto E on Spells/Auto Attacks
 - Distinguish Targeted/Skillshot
 
-TODO:
-- Q rarely misses?
-- FPS Issues? Probably R logic
+## TODO:
+### Sona:
 - Interrupt DB
-- Check if Aery owner is me?
+- Maybe Check if Aery owner is me?
 - Passive Auto Attack Logic?
 - Speed up ally for evading Skillshots
 
-In development:
+### Nami:
+- Full Standalone Plugin
+- Interrupt, Gapcloser
+- W Logic
+
+
+
+### In development:
 - Zyra (On Hold):
 - Auto Q for plants (be annoying)
