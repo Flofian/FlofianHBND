@@ -22,6 +22,9 @@ Features:
 Features:
 - **Auto E on Spells/Auto Attacks**
 - **Distinguish Targeted/Skillshot**
+- Interrupt **Includes Danger Levels, use Q for less danger and R for more danger**
+- Q Anti Gapclose
+- Auto Q on CC
 - NOT A STANDALONE PLUGIN YET
 - -> Use only in addition to some other plugin e.g. kornis
 
@@ -34,7 +37,6 @@ Features:
 
 ### Nami:
 - Full Standalone Plugin
-- Interrupt, Gapcloser
 - W Logic
 
 

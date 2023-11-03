@@ -19,7 +19,8 @@ local SpellQ = {
 local SpellW = {
     range = 725,
     bounceRange = 800,
-    boundingRadiusMod = 0
+    boundingRadiusMod = 0,
+    missileSpeed = 1500, --? 2000? 2500?
 }
 local SpellE = {
     range = 800,
