@@ -20,7 +20,7 @@ Features:
 
 ### Nami:
 Features:
-- **Auto E on Spells/Auto Attacks**
+- **Auto E on Spells**/Auto Attacks
 - **Distinguish Targeted/Skillshot**
 - Interrupt **Includes Danger Levels, use Q for less danger and R for more danger**
 - Q Anti Gapclose
