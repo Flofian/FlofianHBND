@@ -24,5 +24,16 @@ return {
     "sona/sona_menu",
     "nami/nami_menu",
     "nami/nami_main",
+  },
+  resources = {
+    "sprites/NamiQ.png",
+    "sprites/NamiW.png",
+    "sprites/NamiE.png",
+    "sprites/NamiR.png",
+    "sprites/SonaP.png",
+    "sprites/SonaQ.png",
+    "sprites/SonaW.png",
+    "sprites/SonaE.png",
+    "sprites/SonaR.png",
   }
 }

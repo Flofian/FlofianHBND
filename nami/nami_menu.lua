@@ -123,6 +123,14 @@ menu.automatic.autoWTripleBounce:set("tooltip", "Nami W bounces randomly so no g
 menu.automatic:header("hAutoE", "E not here, look E Settings")
 
 
+local spriteQ = graphics.sprite("sprites/NamiQ.png")
+local spriteW = graphics.sprite("sprites/NamiW.png")
+local spriteE = graphics.sprite("sprites/NamiE.png")
+local spriteR = graphics.sprite("sprites/NamiR.png")
+menu.q:set("icon", spriteQ)
+menu.w:set("icon", spriteW)
+menu.e:set("icon", spriteE)
+menu.r:set("icon", spriteR)
 
 
 return menu

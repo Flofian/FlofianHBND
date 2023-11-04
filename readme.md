@@ -38,9 +38,7 @@ Features:
 - Speed up ally for evading Skillshots
 
 ### Nami:
-- Full Standalone Plugin
-- W Logic
-
+- Better R Prediction
 
 
 ### In development:

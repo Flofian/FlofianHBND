@@ -106,7 +106,15 @@ menu.draws.colors:color("colorW", "W Color", 0, 255, 0, 255)
 menu.draws.colors:color("colorE", "E Color", 255, 0, 255, 255)
 menu.draws.colors:color("colorR", "R Color", 255, 255, 0, 255)
 
-
-
+local spriteP = graphics.sprite("sprites/SonaP.png")
+local spriteQ = graphics.sprite("sprites/SonaQ.png")
+local spriteW = graphics.sprite("sprites/SonaW.png")
+local spriteE = graphics.sprite("sprites/SonaE.png")
+local spriteR = graphics.sprite("sprites/SonaR.png")
+menu.passive:set("icon", spriteP)
+menu.q:set("icon", spriteQ)
+menu.w:set("icon", spriteW)
+menu.e:set("icon", spriteE)
+menu.r:set("icon", spriteR)
 
 return menu
