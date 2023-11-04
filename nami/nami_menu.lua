@@ -95,6 +95,7 @@ menu.r:dropdown("pred", "Prediction Mode", 1, {"Simple", "Prediction"})
 
 menu:menu("automatic", "Automatic")
 menu.automatic:boolean("recall", "Dont use anything while recalling", true)
+menu.automatic:boolean("turret", "Dont use anything under enemy turret", true)
 menu.automatic:header("hAutoQ", "Auto Q")
 menu.automatic:dropdown("autoQCC", "Use Q on CC Mode", 2, { "Off", "Predicton", "Buff" })
 menu.automatic:dropdown("autoQGapclose", "Use Q on Gapclose", 3, { "Off", "Simple (NOT TESTED)", "Prediction" })
@@ -102,6 +103,15 @@ menu.automatic:dropdown("autoQGapclose", "Use Q on Gapclose", 3, { "Off", "Simpl
 menu.automatic:header("hAutoW", "Auto W")
 menu.automatic:boolean("autoWHeal", "Use W for Heal under x ", true)
 menu.automatic:slider("autoWHealMana", "Min % mana to use W", 30, 0, 100, 5)
+menu.automatic:boolean("autoWEnemy", "Only if enemies nearby", true)
+menu.automatic.autoWEnemy:set("tooltip", "Not for bounce, just dont waste if ally is safe")
+menu.automatic:slider("autoWEnemyRange", "Enemy in x Range", 1500, 0, 2000, 5)
+menu.automatic.autoWEnemyRange:set("visible", menu.automatic.autoWEnemy:get())
+menu.automatic.autoWEnemy:set("callback", function(old, new) 
+    if old then menu.automatic.autoWEnemyRange:set("visible", false) end
+    if new then menu.automatic.autoWEnemyRange:set("visible", true) end
+end)
+
 menu.automatic:menu("autoWunder", "Auto W under x % HP (0 to disable)")
 for i = 0, objManager.allies_n - 1 do
     local ally = objManager.allies[i]
@@ -112,20 +122,7 @@ menu.automatic.autoWTripleBounce:set("tooltip", "Nami W bounces randomly so no g
 
 menu.automatic:header("hAutoE", "E not here, look E Settings")
 
-menu.automatic:header("hInterrupt", "Interrupt Settings")
-menu.automatic:boolean("interruptQ", "Q to interrupt Danger 1 and 2", true)
-menu.automatic:boolean("interruptR", "R to interrupt Danger 2", true)
-menu.automatic:menu("interruptSpells", "Spell Danger Level")
-for i = 0, objManager.enemies_n - 1 do
-    local enemy = objManager.enemies[i]
-    local n = string.lower(enemy.charName)
-    if interruptableSpells[n] then
-        for _, spell in pairs(interruptableSpells[n]) do
-            menu.automatic.interruptSpells:slider(n .. spell.menuslot,
-                enemy.charName .. " " .. spell.menuslot, spell.danger, 0, 2, 1)
-        end
-    end
-end
+
 
 
 return menu

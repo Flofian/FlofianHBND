@@ -77,6 +77,23 @@ local interruptableSpells = {
         { menuslot = "R", slot = 3, spellname = "xerathlocusofpower2", channelduration = 3, danger = 2 }
     }
 }
+-- need to do it here because i want different interrupt spells for different champs so i wont put it in common
+menu.automatic:header("hInterrupt", "Interrupt Settings")
+menu.automatic:boolean("interruptQ", "Q to interrupt Danger 1 and 2", true)
+menu.automatic:boolean("interruptR", "R to interrupt Danger 2", true)
+menu.automatic:menu("interruptSpells", "Spell Danger Level")
+for i = 0, objManager.enemies_n - 1 do
+    local enemy = objManager.enemies[i]
+    local n = string.lower(enemy.charName)
+    if interruptableSpells[n] then
+        for _, spell in pairs(interruptableSpells[n]) do
+            menu.automatic.interruptSpells:slider(n .. spell.menuslot,
+                enemy.charName .. " " .. spell.menuslot, spell.danger, 0, 2, 1)
+        end
+    end
+end
+
+
 local function dump(o)
     if type(o) == 'table' then
         local s = '{ '
@@ -135,11 +152,13 @@ end
 cb.add(cb.spell, autoEOnSpell)
 
 local function autoWHeal()
+    if menu.automatic.turret:get() and common.isPlayerUnderTurret() then return end
     if not menu.automatic.autoWHeal:get() then return end
     if player.mana / player.maxMana < menu.automatic.autoWHealMana:get() / 100 then return end
     if menu.automatic.recall:get() and player.isRecalling then return end
     if player:spellSlot(1).state ~= 0 then return end
     if player.mana < player.manaCost1 then return end
+    if menu.automatic.autoWEnemy:get() and common.countEnemiesInRange(player.pos, menu.automatic.autoWEnemyRange:get()) == 0 then return end
     local leastHealthAlly = nil
     local leastHealth = math.huge
     for i = 0, objManager.allies_n - 1 do
@@ -184,6 +203,7 @@ local function AutoQCCTargetFilter(res, obj, dist)
 end
 
 local function autoQCC()
+    if menu.automatic.turret:get() and common.isPlayerUnderTurret() then return end
     if menu.automatic.recall:get() and player.isRecalling then return end
     if player:spellSlot(0).state ~= 0 then return end
     if player.mana < player.manaCost0 then return end
@@ -234,6 +254,7 @@ local function AutoQGapcloseTargetFilter(res, obj, dist)
 end
 
 local function autoQGapclose()
+    if menu.automatic.turret:get() and common.isPlayerUnderTurret() then return end
     if menu.automatic.recall:get() and player.isRecalling then return end
     if player:spellSlot(0).state ~= 0 then return end
     if player.mana < player.manaCost0 then return end
@@ -410,6 +431,7 @@ local function wTripleBounce()
     end
 end
 cb.add(cb.tick, function()
+    if menu.automatic.turret:get() and common.isPlayerUnderTurret() then return end 
     if menu.automatic.autoWTripleBounce:get() then
         wTripleBounce()
     end

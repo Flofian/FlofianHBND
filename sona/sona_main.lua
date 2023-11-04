@@ -38,6 +38,65 @@ local function dump(o)
     end
 end
 
+local interruptableSpells = {
+    ["fiddlesticks"] = {
+        { menuslot = "R", slot = 3, spellname = "crowstorm", channelduration = 1.5, danger = 2 },
+    },
+    ["karthus"] = {
+        { menuslot = "R", slot = 3, spellname = "karthusfallenone", channelduration = 3, danger = 2 }
+    },
+    ["katarina"] = {
+        { menuslot = "R", slot = 3, spellname = "katarinar", channelduration = 2.5, danger = 2 }
+    },
+    ["missfortune"] = {
+        { menuslot = "R", slot = 3, spellname = "missfortunebullettime", channelduration = 3, danger = 2 }
+    },
+    ["nunu"] = {
+        { menuslot = "R", slot = 3, spellname = "absolutezero", channelduration = 3, danger = 2 }
+    },
+    ["xerath"] = {
+        { menuslot = "R", slot = 3, spellname = "xerathlocusofpower2", channelduration = 3, danger = 2 }
+    }
+}
+
+menu.automatic:header("hInterrupt", "Interrupt Settings")
+menu.automatic:boolean("interruptR", "R to interrupt Danger 2", true)
+menu.automatic:menu("interruptSpells", "Spell Danger Level")
+for i = 0, objManager.enemies_n - 1 do
+    local enemy = objManager.enemies[i]
+    local n = string.lower(enemy.charName)
+    if interruptableSpells[n] then
+        for _, spell in pairs(interruptableSpells[n]) do
+            menu.automatic.interruptSpells:slider(n .. spell.menuslot,
+                enemy.charName .. " " .. spell.menuslot, spell.danger, 0, 2, 1)
+        end
+    end
+end
+local function interrupt(spell)
+    if menu.automatic.recall:get() and player.isRecalling then return end
+    if menu.automatic.interruptQ:get() or menu.automatic.interruptR:get() then
+        if spell.owner.type == TYPE_HERO and spell.owner.team == TEAM_ENEMY then
+            local n = string.lower(spell.owner.charName)
+            if interruptableSpells[n] then
+                for _, ispell in pairs(interruptableSpells[n]) do
+                    if string.lower(spell.name) == ispell.spellname then
+                            -- R Check
+                        if menu.automatic.interruptR:get() and player:spellSlot(3).state == 0 and player.mana >= player.manaCost3
+                            and menu.automatic.interruptSpells[n .. ispell.menuslot]:get() >= 2 and player.pos:dist(spell.owner.pos) < r_pred_input.range then
+                            player:castSpell("pos", 3, spell.owner.pos)
+                            if menu.info.debug:get() then
+                                chat.print("Interrupting " .. spell.owner.charName .. " " .. ispell.menuslot .. " with R")
+                            end
+                            return
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+cb.add(cb.spell, interrupt)
+
 local function wshieldstrength(target)
     local hashTotalShield = game.fnvhash("TotalShield")
     local calcs = player:spellSlot(1):calculate(0, hashTotalShield)
