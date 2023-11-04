@@ -25,8 +25,10 @@ Features:
 - Interrupt **Includes Danger Levels, use Q for less danger and R for more danger**
 - Q Anti Gapclose
 - Auto Q on CC
-- NOT A STANDALONE PLUGIN YET
-- -> Use only in addition to some other plugin e.g. kornis
+- Q Combo/Harass
+- W **2/3 Bounce Logic**
+- R Multi Hit (not great yet)
+
 
 ## TODO:
 ### Sona:
