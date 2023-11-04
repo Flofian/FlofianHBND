@@ -17,6 +17,7 @@ Features:
 - R Multi Hit
 - Auto R X Enemies
 - Semi R
+- R Interrupt
 
 ### Nami:
 Features:
@@ -32,7 +33,6 @@ Features:
 
 ## TODO:
 ### Sona:
-- Interrupt DB
 - Maybe Check if Aery owner is me?
 - Passive Auto Attack Logic?
 - Speed up ally for evading Skillshots
