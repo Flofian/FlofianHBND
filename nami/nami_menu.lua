@@ -79,6 +79,8 @@ for i = 0, objManager.allies_n - 1 do
     local ally = objManager.allies[i]
     menu.automatic.autoWunder:slider(ally.charName, ally.charName, 60, 0, 100, 5)
 end
+menu.automatic:dropdown("autoWTripleBounce", "Use W for Triple Bounce", 2, {"Off", "Simple", "Prediction"})
+menu.automatic.autoWTripleBounce:set("tooltip", "Nami W bounces randomly so no guarantee")
 
 menu.automatic:header("hInterrupt", "Interrupt Settings")
 menu.automatic:boolean("interruptQ", "Q to interrupt Danger 1 and 2", true)

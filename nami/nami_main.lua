@@ -282,6 +282,115 @@ end
 cb.add(cb.spell, interrupt)
 
 
+local function autoWTripleBounce()
+    if menu.automatic.recall:get() and player.isRecalling then return end
+    if player:spellSlot(1).state ~= 0 then return end
+    if player.mana < player.manaCost1 then return end
+    local mode = menu.automatic.autoWTripleBounce:get()
+    if mode == 1 then return end
+    if mode == 2 then
+        --starting with enemy
+        for i = 0, objManager.enemies_n - 1 do
+            local enemy = objManager.enemies[i]
+            --local distanceTravelled = player.pos:dist(ally.pos)
+            if enemy and enemy.isVisible and enemy.isTargetable and enemy.isAlive and enemy.pos:dist(player.pos) < 725 then
+                for j = 0, objManager.allies_n - 1 do
+                    local ally = objManager.allies[j]
+                    if ally and ally.isVisible and ally.isTargetable and ally.isAlive and ally.pos:dist(enemy.pos) < SpellW.bounceRange then
+                        for k = 0, objManager.enemies_n - 1 do
+                            local enemy2 = objManager.enemies[k]
+                            if enemy2 and enemy2 ~= enemy and enemy2.isVisible and enemy2.isTargetable and enemy2.isAlive and enemy2.pos:dist(ally.pos) < SpellW.bounceRange then
+                                player:castSpell("obj", 1, enemy)
+                                if menu.info.debug:get() then
+                                    chat.print("Auto W 3 Simple " ..
+                                        enemy.charName .. " to " .. ally.charName .. " to " .. enemy2.charName)
+                                end
+                                return
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        --starting with ally
+        for i = 0, objManager.allies_n - 1 do
+            local ally = objManager.allies[i]
+            --local distanceTravelled = player.pos:dist(ally.pos)
+            if ally and ally.isVisible and ally.isTargetable and ally.isAlive and ally.pos:dist(player.pos) < 725 then
+                for j = 0, objManager.enemies_n - 1 do
+                    local enemy = objManager.enemies[j]
+                    if enemy and enemy.isVisible and enemy.isTargetable and enemy.isAlive and enemy.pos:dist(ally.pos) < SpellW.bounceRange then
+                        for k = 0, objManager.allies_n - 1 do
+                            local ally2 = objManager.allies[k]
+                            if ally2 and ally2 ~= ally and ally2.isVisible and ally2.isTargetable and ally2.isAlive and ally2.pos:dist(enemy.pos) < SpellW.bounceRange then
+                                player:castSpell("obj", 1, ally)
+                                if menu.info.debug:get() then
+                                    chat.print("Auto W 3 Simple " ..
+                                        ally.charName .. " to " .. enemy.charName .. " to " .. ally2.charName)
+                                end
+                                return
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    if mode == 3 then
+        --starting with enemy
+        for i = 0, objManager.enemies_n - 1 do
+            local enemy = objManager.enemies[i]
+            local distanceTravelled = player.pos:dist(enemy.pos)
+            if enemy and enemy.isVisible and enemy.isTargetable and enemy.isAlive and enemy.pos:dist(player.pos) < 725 then
+                for j = 0, objManager.allies_n - 1 do
+                    local ally = objManager.allies[j]
+                    local allypos = pred.core.get_pos_after_time(ally, distanceTravelled / SpellW.missileSpeed)
+                    if ally and ally.isVisible and ally.isTargetable and ally.isAlive and allypos:dist(enemy.pos2D) < SpellW.bounceRange then
+                        distanceTravelled = distanceTravelled + allypos:dist(enemy.pos2D)
+                        for k = 0, objManager.enemies_n - 1 do
+                            local enemy2 = objManager.enemies[k]
+                            if enemy2 and enemy2 ~= enemy and enemy2.isVisible and enemy2.isTargetable and enemy2.isAlive and pred.core.get_pos_after_time(enemy2, distanceTravelled / SpellW.missileSpeed):dist(allypos) < SpellW.bounceRange then
+                                player:castSpell("obj", 1, enemy)
+                                if menu.info.debug:get() then
+                                    chat.print("Auto W 3 Pred " ..
+                                        enemy.charName .. " to " .. ally.charName .. " to " .. enemy2.charName)
+                                end
+                                return
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        --starting with ally
+        for i = 0, objManager.allies_n - 1 do
+            local ally = objManager.allies[i]
+            local distanceTravelled = player.pos:dist(ally.pos)
+            if ally and ally.isVisible and ally.isTargetable and ally.isAlive and ally.pos:dist(player.pos) < 725 then
+                for j = 0, objManager.enemies_n - 1 do
+                    local enemy = objManager.enemies[j]
+                    local enemypos = pred.core.get_pos_after_time(enemy, distanceTravelled / SpellW.missileSpeed)
+                    if enemy and enemy.isVisible and enemy.isTargetable and enemy.isAlive and enemypos:dist(ally.pos2D) < SpellW.bounceRange then
+                        distanceTravelled = distanceTravelled + enemypos:dist(ally.pos2D)
+                        for k = 0, objManager.allies_n - 1 do
+                            local ally2 = objManager.allies[k]
+                            if ally2 and ally2 ~= ally and ally2.isVisible and ally2.isTargetable and ally2.isAlive and pred.core.get_pos_after_time(ally2, distanceTravelled / SpellW.missileSpeed):dist(enemypos) < SpellW.bounceRange then
+                                player:castSpell("obj", 1, ally)
+                                if menu.info.debug:get() then
+                                    chat.print("Auto W 3 Pred " ..
+                                        ally.charName .. " to " .. enemy.charName .. " to " .. ally2.charName)
+                                end
+                                return
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+cb.add(cb.tick, autoWTripleBounce)
+
 
 
 chat.print("Loaded Flofian Nami")
