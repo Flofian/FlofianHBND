@@ -27,12 +27,24 @@ menu.w:header("hwCombo", "Combo Settings")
 menu.w:boolean("comboW", "Use W", true)
 menu.w:dropdown("comboWmode", "W Mode", 2, { "Max Waste", "Under X % HP" })
 menu.w:slider("comboWmaxwaste", "Maximum wasted heal % ", 10, 0, 100, 5)
+menu.w.comboWmaxwaste:set("visible", menu.w.comboWmode:get() == 1)
 menu.w:menu("comboWunder", "Under X % HP")
 menu.w.comboWunder:slider("Sona", "Sona", 60, 0, 100, 5)
 for i = 1, objManager.allies_n - 1 do
     local ally = objManager.allies[i]
     menu.w.comboWunder:slider(ally.charName, ally.charName, 75, 0, 100, 5)
 end
+menu.w.comboWunder:set("visible", menu.w.comboWmode:get() == 2)
+menu.w.comboWmode:set("callback", function(old, new)
+    if new == 2 then
+        menu.w.comboWmaxwaste:set("visible", false)
+        menu.w.comboWunder:set("visible", true)
+    end
+    if new == 1 then
+        menu.w.comboWmaxwaste:set("visible", true)
+        menu.w.comboWunder:set("visible", false)
+    end
+end)
 
 menu:menu("e", "E Settings")
 menu.e:header("heCombo", "Combo Settings")
