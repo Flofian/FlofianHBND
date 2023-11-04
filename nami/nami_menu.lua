@@ -62,6 +62,12 @@ menu.q.harass:set("callback", function(old, new)
     if new == 3 then menu.q.harassMS:set("visible", true) end
 end)
 
+menu:menu("w", "W Settings")
+menu.w:dropdown("pred", "Prediction Mode", 2, {"Simple", "Prediction"})
+menu.w:dropdown("combo", "Use W in Combo", 2, { "Off", "2 Targets", "3 Targets"})
+menu.w:dropdown("harass", "Use W in Harass", 2, { "Off", "2 Targets", "3 Targets"})
+
+
 menu:menu("e", "E Settings")
 menu.e:boolean("eOnSpells", "Use E on spells", true)
 menu.e:boolean("eCombo", "Only use E in Combo", false)
@@ -80,13 +86,13 @@ for i = 0, objManager.allies_n - 1 do
     menu.e[ally.charName]:boolean("R", "R", ally:spellSlot(3).targetingType == targetUnit)
 end
 
+
+
 menu:menu("automatic", "Automatic")
 menu.automatic:boolean("recall", "Dont use anything while recalling", true)
 menu.automatic:header("hAutoQ", "Auto Q")
 menu.automatic:dropdown("autoQCC", "Use Q on CC Mode", 2, { "Off", "Predicton", "Buff" })
 menu.automatic:dropdown("autoQGapclose", "Use Q on Gapclose", 3, { "Off", "Simple (NOT TESTED)", "Prediction" })
-
-
 
 menu.automatic:header("hAutoW", "Auto W")
 menu.automatic:boolean("autoWHeal", "Use W for Heal under x ", true)
@@ -96,7 +102,7 @@ for i = 0, objManager.allies_n - 1 do
     local ally = objManager.allies[i]
     menu.automatic.autoWunder:slider(ally.charName, ally.charName, 60, 0, 100, 5)
 end
-menu.automatic:dropdown("autoWTripleBounce", "Use W for Triple Bounce", 2, { "Off", "Simple", "Prediction" })
+menu.automatic:boolean("autoWTripleBounce", "Use W for Triple Bounce", true)
 menu.automatic.autoWTripleBounce:set("tooltip", "Nami W bounces randomly so no guarantee")
 
 menu.automatic:header("hAutoE", "E not here, look E Settings")

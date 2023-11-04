@@ -283,13 +283,12 @@ end
 cb.add(cb.spell, interrupt)
 
 
-local function autoWTripleBounce()
+local function wTripleBounce()
     if menu.automatic.recall:get() and player.isRecalling then return end
     if player:spellSlot(1).state ~= 0 then return end
     if player.mana < player.manaCost1 then return end
-    local mode = menu.automatic.autoWTripleBounce:get()
-    if mode == 1 then return end
-    if mode == 2 then
+    local mode = menu.w.pred:get()
+    if mode == 1 then
         --starting with enemy
         for i = 0, objManager.enemies_n - 1 do
             local enemy = objManager.enemies[i]
@@ -335,7 +334,7 @@ local function autoWTripleBounce()
             end
         end
     end
-    if mode == 3 then
+    if mode == 2 then
         --starting with enemy
         for i = 0, objManager.enemies_n - 1 do
             local enemy = objManager.enemies[i]
@@ -388,7 +387,86 @@ local function autoWTripleBounce()
         end
     end
 end
-cb.add(cb.tick, autoWTripleBounce)
+--cb.add(cb.tick, function () autoWTripleBounce(menu.automatic.autoWTripleBounce:get()) end)
+
+local function wDoubleBounce()
+    if menu.automatic.recall:get() and player.isRecalling then return end
+    if player:spellSlot(1).state ~= 0 then return end
+    if player.mana < player.manaCost1 then return end
+    local mode = menu.w.pred:get()
+    if mode == 1 then
+        --starting with enemy
+        for i = 0, objManager.enemies_n - 1 do
+            local enemy = objManager.enemies[i]
+            if enemy and enemy.isVisible and enemy.isTargetable and enemy.isAlive and enemy.pos:dist(player.pos) < 725 then
+                for j = 0, objManager.allies_n - 1 do
+                    local ally = objManager.allies[j]
+                    if ally and ally.isVisible and ally.isTargetable and ally.isAlive and ally.pos:dist(enemy.pos) < SpellW.bounceRange then
+                        player:castSpell("obj", 1, enemy)
+                        if menu.info.debug:get() then
+                            chat.print("W 2 Simple " .. enemy.charName .. " to " .. ally.charName)
+                        end
+                        return
+                    end
+                end
+            end
+        end
+        --starting with ally
+        for i = 0, objManager.allies_n - 1 do
+            local ally = objManager.allies[i]
+            if ally and ally.isVisible and ally.isTargetable and ally.isAlive and ally.pos:dist(player.pos) < 725 then
+                for j = 0, objManager.enemies_n - 1 do
+                    local enemy = objManager.enemies[j]
+                    if enemy and enemy.isVisible and enemy.isTargetable and enemy.isAlive and enemy.pos:dist(ally.pos) < SpellW.bounceRange then
+                        player:castSpell("obj", 1, ally)
+                        if menu.info.debug:get() then
+                            chat.print("W 2 Simple " .. ally.charName .. " to " .. enemy.charName)
+                        end
+                        return
+                    end
+                end
+            end
+        end
+    end
+    if mode == 2 then
+        --starting with enemy
+        for i = 0, objManager.enemies_n - 1 do
+            local enemy = objManager.enemies[i]
+            local distanceTravelled = player.pos:dist(enemy.pos)
+            if enemy and enemy.isVisible and enemy.isTargetable and enemy.isAlive and enemy.pos:dist(player.pos) < 725 then
+                for j = 0, objManager.allies_n - 1 do
+                    local ally = objManager.allies[j]
+                    local allypos = pred.core.get_pos_after_time(ally, distanceTravelled / SpellW.missileSpeed)
+                    if ally and ally.isVisible and ally.isTargetable and ally.isAlive and allypos:dist(enemy.pos2D) < SpellW.bounceRange then
+                        player:castSpell("obj", 1, enemy)
+                        if menu.info.debug:get() then
+                            chat.print("W 2 Pred " .. enemy.charName .. " to " .. ally.charName)
+                        end
+                        return
+                    end
+                end
+            end
+        end
+        --starting with ally
+        for i = 0, objManager.allies_n - 1 do
+            local ally = objManager.allies[i]
+            local distanceTravelled = player.pos:dist(ally.pos)
+            if ally and ally.isVisible and ally.isTargetable and ally.isAlive and ally.pos:dist(player.pos) < 725 then
+                for j = 0, objManager.enemies_n - 1 do
+                    local enemy = objManager.enemies[j]
+                    local enemypos = pred.core.get_pos_after_time(enemy, distanceTravelled / SpellW.missileSpeed)
+                    if enemy and enemy.isVisible and enemy.isTargetable and enemy.isAlive and enemypos:dist(ally.pos2D) < SpellW.bounceRange then
+                        player:castSpell("obj", 1, ally)
+                        if menu.info.debug:get() then
+                            chat.print("W 2 Pred " .. ally.charName .. " to " .. enemy.charName)
+                        end
+                        return
+                    end
+                end
+            end
+        end
+    end
+end
 
 local function comboQBuffTarget(res, obj, dist)
     if dist < SpellQ.range and obj.buff[BUFF_SLOW] then
@@ -481,10 +559,20 @@ end
 
 local function comboMode()
     comboHarassQ("combo")
+    if menu.w.combo:get() == 2 then
+        wDoubleBounce()
+    elseif menu.w.combo:get() == 3 then
+        wTripleBounce()
+    end
 end
 
 local function harassMode()
     comboHarassQ("harass")
+    if menu.w.harass:get() == 2 then
+        wDoubleBounce()
+    elseif menu.w.harass:get() == 3 then
+        wTripleBounce()
+    end
 end
 
 
