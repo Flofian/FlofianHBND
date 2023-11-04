@@ -73,8 +73,8 @@ for i = 0, objManager.enemies_n - 1 do
     end
 end
 local function interrupt(spell)
-    if menu.automatic.recall:get() and player.isRecalling then return end
-    if menu.automatic.interruptQ:get() or menu.automatic.interruptR:get() then
+    if menu.automatic.autoRecallCheck:get() and player.isRecalling then return end
+    if menu.automatic.interruptR:get() then
         if spell.owner.type == TYPE_HERO and spell.owner.team == TEAM_ENEMY then
             local n = string.lower(spell.owner.charName)
             if interruptableSpells[n] then
