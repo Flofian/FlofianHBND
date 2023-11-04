@@ -86,6 +86,10 @@ for i = 0, objManager.allies_n - 1 do
     menu.e[ally.charName]:boolean("R", "R", ally:spellSlot(3).targetingType == targetUnit)
 end
 
+menu:menu("r", "R Settings")
+menu.r:keybind("semi", "Semi R Key", "T", nil)
+menu.r:slider("comboTargets", "Combo Min R Targets (0 to disable)", 2, 0, 5, 1)
+menu.r:dropdown("pred", "Prediction Mode", 1, {"Simple", "Prediction"})
 
 
 menu:menu("automatic", "Automatic")

@@ -4,6 +4,8 @@ local evade = module.seek("evade")
 local orb = module.internal('orb')
 local pred = module.internal("pred");
 local TS = module.internal("TS")
+local clip = module.internal('clipper')
+local polygon = clip.polygon
 local circle_quality = 64
 local bool_to_number = { [true] = 1, [false] = 0 }
 local spell_dir = { [0] = "Q", [1] = "W", [2] = "E", [3] = "R" }
@@ -27,7 +29,7 @@ local SpellE = {
     boundingRadiusMod = 0
 }
 local SpellR = {
-    range = 1000,
+    range = 1200, --Not actual range, but everything higher will probably miss
     speed = 850,
     width = 250,
     delay = 0.5,
@@ -75,6 +77,18 @@ local interruptableSpells = {
         { menuslot = "R", slot = 3, spellname = "xerathlocusofpower2", channelduration = 3, danger = 2 }
     }
 }
+local function dump(o)
+    if type(o) == 'table' then
+        local s = '{ '
+        for k, v in pairs(o) do
+            if type(k) ~= 'number' then k = '"' .. k .. '"' end
+            s = s .. '[' .. k .. '] = ' .. dump(v) .. ',\n'
+        end
+        return s .. '} '
+    else
+        return tostring(o)
+    end
+end
 
 local function spellSlotToLetter(spell)
     if spell.isBasicAttack then return "AA" end
@@ -387,7 +401,11 @@ local function wTripleBounce()
         end
     end
 end
---cb.add(cb.tick, function () autoWTripleBounce(menu.automatic.autoWTripleBounce:get()) end)
+cb.add(cb.tick, function()
+    if menu.automatic.autoWTripleBounce:get() then
+        wTripleBounce()
+    end
+end)
 
 local function wDoubleBounce()
     if menu.automatic.recall:get() and player.isRecalling then return end
@@ -556,6 +574,110 @@ local function comboHarassQ(comboOrHarass)
         end
     end
 end
+local function semiRTarget(res, obj, dist)
+    if dist < SpellR.range then
+        res.obj = obj
+        return true
+    end
+end
+
+local function semiR()
+    if not menu.r.semi:get() then return end
+    if player:spellSlot(3).state ~= 0 then return end
+    if player.mana < player.manaCost3 then return end
+    local res = TS.get_result(semiRTarget).obj
+    if res then
+        player:castSpell("pos", 3, res.pos)
+        if menu.info.debug:get() then
+            chat.print("Semi R on " .. res.charName)
+        end
+    end
+end
+
+local function willHitR(dir, targetpos)
+
+    local a = player.pos+dir:perp2()*SpellR.width
+    local d = player.pos+dir:perp1()*SpellR.width
+    local b = a + dir*SpellR.range
+    local c = d + dir*SpellR.range
+    local f1 = targetpos:dot(a-b)
+    local f1min = a:dot(a-b)
+    local f1max = b:dot(a-b)
+    local f2 = targetpos:dot(a-d)
+    local f2min = a:dot(a-d)
+    local f2max = d:dot(a-d)
+    return f1min < f1 and f1 < f1max and f2min < f2 and f2 < f2max
+end
+
+cb.add(cb.tick, semiR)
+local function comboR()
+    if player.mana < player.manaCost3 then return end
+    if player:spellSlot(3).state ~= 0 then return end
+    local minTargets = menu.r.comboTargets:get()
+    if minTargets == 0 then return end
+    local enemies_in_range = {}
+    for i = 0, objManager.enemies_n - 1 do
+        local enemy = objManager.enemies[i]
+        if enemy and enemy.isVisible and enemy.isTargetable and enemy.isAlive and enemy.pos:dist(player.pos) < SpellR.range then
+            table.insert(enemies_in_range, enemy)
+        end
+    end
+    if #enemies_in_range < minTargets then return end
+    if menu.r.pred:get() == 1 then
+        -- Kornis Prediction Mode
+        local target = TS.get_result(semiRTarget).obj
+        if target then
+            local pos = pred.linear.get_prediction(SpellR, target)
+            if pos and pos.startPos:dist(pos.endPos) < SpellR.range then
+                local enemycount = common.countEnemiesInRange(pos.endPos:toGame3D(), SpellR.width)
+                if enemycount >= minTargets then
+                    player:castSpell("pos", 3, pos.endPos:toGame3D())
+                    if menu.info.debug:get() then
+                        chat.print("Combo R on " .. target.charName .. "hitting " .. enemycount .. " enemies")
+                    end
+                end
+            end
+        end
+    else
+        -- If this works i cry
+        -- it does in fact not work
+        --[[ local enemies_in_range = {}
+        for i = 0, objManager.enemies_n - 1 do
+            local enemy = objManager.enemies[i]
+            if enemy and enemy.isVisible and enemy.isTargetable and enemy.isAlive and enemy.pos:dist(player.pos) < SpellR.range then
+                table.insert(enemies_in_range, enemy)
+            end
+        end
+        if #enemies_in_range < minTargets then return end
+        local enemy_positions = {}
+        for _, enemy in pairs(enemies_in_range) do
+            local pos = pred.linear.get_prediction(SpellR, enemy)
+            if pos and pos.startPos:dist(pos.endPos) < SpellR.range then
+                table.insert(enemy_positions, pos.endPos)
+            end
+            --table.insert(enemy_positions, )
+        end
+        
+        for i=0, 100 do
+            local dir = vec2(math.cos(i*math.pi/200), math.sin(i*math.pi/200))
+            local enemycount = 0
+            for _, pos in pairs(enemy_positions) do
+                if pos and willHitR(dir, pos) then
+                    enemycount = enemycount + 1
+                end
+            end
+            if enemycount >= minTargets then
+                --player:castSpell("pos", 3, (player.pos2D + dir * 100):toGame3D())
+                if menu.info.debug:get() then
+                    chat.print("Combo R hitting " .. enemycount .. " enemies")
+                end
+                return
+            end
+        end ]]
+        chat.print("Mode disabled")
+        menu.r.pred:set("value", 1)
+    end
+end
 
 local function comboMode()
     comboHarassQ("combo")
@@ -564,6 +686,7 @@ local function comboMode()
     elseif menu.w.combo:get() == 3 then
         wTripleBounce()
     end
+    comboR()
 end
 
 local function harassMode()
@@ -574,6 +697,7 @@ local function harassMode()
         wTripleBounce()
     end
 end
+
 
 
 local function orbModes()
