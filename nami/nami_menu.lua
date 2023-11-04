@@ -63,6 +63,7 @@ menu.q.harass:set("callback", function(old, new)
 end)
 
 menu:menu("w", "W Settings")
+menu.w:slider("range", "W BOUNCE Range", 750, 0, 800, 5)
 menu.w:dropdown("pred", "Prediction Mode", 2, {"Simple", "Prediction"})
 menu.w:dropdown("combo", "Use W in Combo", 2, { "Off", "2 Targets", "3 Targets"})
 menu.w:dropdown("harass", "Use W in Harass", 2, { "Off", "2 Targets", "3 Targets"})
