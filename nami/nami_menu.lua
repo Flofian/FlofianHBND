@@ -46,8 +46,25 @@ menu:menu("info", "Important Information")
 --menu.info:header("info1", "Currently Only E on spells")
 menu.info:boolean("debug", "Show Debug prints", false)
 
+menu:menu("q", "Q Settings")
+menu.q:dropdown("combo", "Use Q in Combo", 3, { "Off", "On Slow Buff", "Under x Movespeed", "Always" })
+menu.q:slider("comboMS", "Max Movespeed to use Q in Combo", 300, 100, 400, 10)
+menu.q.comboMS:set("visible", menu.q.combo:get() == 3)
+menu.q.combo:set("callback", function(old, new) 
+    if old == 3 then menu.q.comboMS:set("visible", false) end
+    if new == 3 then menu.q.comboMS:set("visible", true) end
+end)
+menu.q:dropdown("harass", "Use Q in Harass", 2, { "Off", "On Slow Buff", "Under x Movespeed", "Always" })
+menu.q:slider("harassMS", "Max Movespeed to use Q in Harass", 300, 100, 400, 10)
+menu.q.harassMS:set("visible", menu.q.harass:get() == 3)
+menu.q.harass:set("callback", function(old, new) 
+    if old == 3 then menu.q.harassMS:set("visible", false) end
+    if new == 3 then menu.q.harassMS:set("visible", true) end
+end)
+
 menu:menu("e", "E Settings")
 menu.e:boolean("eOnSpells", "Use E on spells", true)
+menu.e:boolean("eCombo", "Only use E in Combo", false)
 menu.e:boolean("eSpellTargetOverwrite", "OVERWRITE Only E on targetted Spells", false)
 menu.e.eSpellTargetOverwrite:set("tooltip", "By default, only targeted Spells are enabled in champ settings")
 menu.e:boolean("eSpellAAOverwrite", "OVERWRITE Only E on Autoattacks", false)
@@ -67,7 +84,7 @@ menu:menu("automatic", "Automatic")
 menu.automatic:boolean("recall", "Dont use anything while recalling", true)
 menu.automatic:header("hAutoQ", "Auto Q")
 menu.automatic:dropdown("autoQCC", "Use Q on CC Mode", 2, { "Off", "Predicton", "Buff" })
-menu.automatic:dropdown("autoQGapclose" , "Use Q on Gapclose", 3, { "Off", "Simple (NOT TESTED)", "Prediction" })
+menu.automatic:dropdown("autoQGapclose", "Use Q on Gapclose", 3, { "Off", "Simple (NOT TESTED)", "Prediction" })
 
 
 
@@ -79,8 +96,10 @@ for i = 0, objManager.allies_n - 1 do
     local ally = objManager.allies[i]
     menu.automatic.autoWunder:slider(ally.charName, ally.charName, 60, 0, 100, 5)
 end
-menu.automatic:dropdown("autoWTripleBounce", "Use W for Triple Bounce", 2, {"Off", "Simple", "Prediction"})
+menu.automatic:dropdown("autoWTripleBounce", "Use W for Triple Bounce", 2, { "Off", "Simple", "Prediction" })
 menu.automatic.autoWTripleBounce:set("tooltip", "Nami W bounces randomly so no guarantee")
+
+menu.automatic:header("hAutoE", "E not here, look E Settings")
 
 menu.automatic:header("hInterrupt", "Interrupt Settings")
 menu.automatic:boolean("interruptQ", "Q to interrupt Danger 1 and 2", true)

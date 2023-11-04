@@ -88,6 +88,7 @@ end
 
 local function autoEOnSpell(spell)
     if menu.automatic.recall:get() and player.isRecalling then return end
+    if menu.e.eCombo:get() and not orb.menu.combat.key:get() then return end
     if player:spellSlot(2).state ~= 0 then return end
     if player.mana < player.manaCost2 then return end
     if spell.owner.type ~= TYPE_HERO or spell.owner.team ~= TEAM_ALLY then return end
@@ -292,7 +293,6 @@ local function autoWTripleBounce()
         --starting with enemy
         for i = 0, objManager.enemies_n - 1 do
             local enemy = objManager.enemies[i]
-            --local distanceTravelled = player.pos:dist(ally.pos)
             if enemy and enemy.isVisible and enemy.isTargetable and enemy.isAlive and enemy.pos:dist(player.pos) < 725 then
                 for j = 0, objManager.allies_n - 1 do
                     local ally = objManager.allies[j]
@@ -315,7 +315,6 @@ local function autoWTripleBounce()
         --starting with ally
         for i = 0, objManager.allies_n - 1 do
             local ally = objManager.allies[i]
-            --local distanceTravelled = player.pos:dist(ally.pos)
             if ally and ally.isVisible and ally.isTargetable and ally.isAlive and ally.pos:dist(player.pos) < 725 then
                 for j = 0, objManager.enemies_n - 1 do
                     local enemy = objManager.enemies[j]
@@ -391,6 +390,112 @@ local function autoWTripleBounce()
 end
 cb.add(cb.tick, autoWTripleBounce)
 
+local function comboQBuffTarget(res, obj, dist)
+    if dist < SpellQ.range and obj.buff[BUFF_SLOW] then
+        res.obj = obj
+        return true
+    end
+end
+local function comboQMSTarget(res, obj, dist)
+    if dist < SpellQ.range and obj.moveSpeed <= menu.q.comboMS:get() then
+        res.obj = obj
+        return true
+    end
+end
+local function harassQMSTarget(res, obj, dist)
+    if dist < SpellQ.range and obj.moveSpeed <= menu.q.harassMS:get() then
+        res.obj = obj
+        return true
+    end
+end
+
+local function comboQTraceFilter(seg, obj)
+    if seg.startPos:dist(seg.endPos) > SpellQ.range then return false end
+
+    if pred.trace.circular.hardlock(SpellQ, seg, obj) then
+        return true
+    end
+    if pred.trace.circular.hardlockmove(SpellQ, seg, obj) then
+        return true
+    end
+    if pred.trace.newpath(obj, 0.033, 0.500) then
+        return true
+    end
+end
+
+local function comboQAlwaysTarget(res, obj, dist)
+    if dist > 1000 then return false end
+    local seg = pred.circular.get_prediction(SpellQ, obj)
+    if not seg then return false end
+    if not comboQTraceFilter(seg, obj) then return false end
+
+    res.pos = seg.endPos
+    res.obj = obj
+    return true
+end
+
+local function comboHarassQ(comboOrHarass)
+    -- Code duplication for debug purpose
+    if player:spellSlot(0).state ~= 0 then return end
+    if player.mana < player.manaCost0 then return end
+    local mode = menu.q[comboOrHarass]:get()
+    if mode == 1 then return end
+    local qTarget = nil
+    if mode == 2 then
+        qTarget = TS.get_result(comboQBuffTarget).obj
+        if not qTarget then return end
+        local pos = pred.circular.get_prediction(SpellQ, qTarget)
+        if pos and pos.startPos:dist(pos.endPos) < SpellQ.range then
+            player:castSpell("pos", 0, pos.endPos:toGame3D())
+            if menu.info.debug:get() then
+                chat.print("Combo Q on " .. qTarget.charName .. " with Buff")
+            end
+        end
+    end
+    if mode == 3 then
+        if comboOrHarass == "combo" then
+            qTarget = TS.get_result(comboQMSTarget).obj
+        else
+            qTarget = TS.get_result(harassQMSTarget).obj
+        end
+        qTarget = TS.get_result(comboQMSTarget).obj
+        if not qTarget then return end
+        local pos = pred.circular.get_prediction(SpellQ, qTarget)
+        if pos and pos.startPos:dist(pos.endPos) < SpellQ.range then
+            player:castSpell("pos", 0, pos.endPos:toGame3D())
+            if menu.info.debug:get() then
+                chat.print("Combo Q on " .. qTarget.charName .. " with " .. qTarget.moveSpeed .. " MS")
+            end
+        end
+    end
+    if mode == 4 then
+        local res = TS.get_result(comboQAlwaysTarget)
+        if res.pos then
+            player:castSpell('pos', 0, res.pos:toGame3D())
+            if menu.info.debug:get() then
+                chat.print("Combo Q on " .. res.obj.charName .. " Always")
+            end
+        end
+    end
+end
+
+local function comboMode()
+    comboHarassQ("combo")
+end
+
+local function harassMode()
+    comboHarassQ("harass")
+end
+
+
+local function orbModes()
+    if orb.menu.combat.key:get() then
+        comboMode()
+    elseif orb.menu.hybrid.key:get() then
+        harassMode()
+    end
+end
+cb.add(cb.tick, orbModes)
 
 
 chat.print("Loaded Flofian Nami")
