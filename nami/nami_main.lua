@@ -756,7 +756,7 @@ local stasisBuffList = {
 }
 
 local function autoQSpecialSpells(spell)
-    -- TODO : When swapping to BG, ignore if spell isInsta or canMoveWhileChanneling
+    -- TODO : When swapping to BGX, ignore if spell isInsta or canMoveWhileChanneling :D
     if menu.automatic.recall:get() and player.isRecalling then return end
     if spell.owner.type ~= TYPE_HERO or spell.owner.team ~= TEAM_ENEMY then return end
     if player:spellSlot(0).state ~= 0 then return end
