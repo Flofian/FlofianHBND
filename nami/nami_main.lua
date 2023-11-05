@@ -742,7 +742,7 @@ local function orbModes()
 end
 cb.add(cb.tick, orbModes)
 
--- DEBUG
+
 local spellsWhereQWillHit = Set {
     "FioraW",
     "BelvethE",

@@ -41,6 +41,7 @@ Features:
 ### Nami:
 - Better R Prediction
 - All special Spells for auto q (panth r + shen r + tf r (destination), ekko r, teleport)
+- Auto Q on Stasis other mode? Instead of delayedAction, just check regularly enough
 
 
 ### In development:
