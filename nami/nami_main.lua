@@ -11,7 +11,7 @@ local bool_to_number = { [true] = 1, [false] = 0 }
 local spell_dir = { [0] = "Q", [1] = "W", [2] = "E", [3] = "R" }
 
 local SpellQ = {
-    delay = 1,
+    delay = 0.976,
     radius = 100,
     range = 850,
     speed = math.huge,
@@ -20,7 +20,7 @@ local SpellQ = {
 }
 local SpellW = {
     range = 725,
-    bounceRange = function () return menu.w.range:get() end,
+    bounceRange = function() return menu.w.range:get() end,
     boundingRadiusMod = 0,
     missileSpeed = 1500, --? 2000? 2500?
 }
@@ -93,6 +93,11 @@ for i = 0, objManager.enemies_n - 1 do
     end
 end
 
+function Set(list)
+    local set = {}
+    for _, l in ipairs(list) do set[l] = true end
+    return set
+end
 
 local function dump(o)
     if type(o) == 'table' then
@@ -164,11 +169,10 @@ local function autoWHeal()
     for i = 0, objManager.allies_n - 1 do
         local ally = objManager.allies[i]
         if ally and ally.isVisible and ally.isTargetable and ally.isAlive and ally.health / ally.maxHealth < menu.automatic.autoWunder[ally.charName]:get() / 100 and ally.pos:dist(player.pos) < 725 then
-            if ally.health/ally.maxHealth < leastHealth then
-                leastHealth = ally.health/ally.maxHealth
+            if ally.health / ally.maxHealth < leastHealth then
+                leastHealth = ally.health / ally.maxHealth
                 leastHealthAlly = ally
-            end 
-            
+            end
         end
     end
     if not leastHealthAlly then return end
@@ -431,7 +435,7 @@ local function wTripleBounce()
     end
 end
 cb.add(cb.tick, function()
-    if menu.automatic.turret:get() and common.isPlayerUnderTurret() then return end 
+    if menu.automatic.turret:get() and common.isPlayerUnderTurret() then return end
     if menu.automatic.autoWTripleBounce:get() then
         wTripleBounce()
     end
@@ -625,17 +629,16 @@ local function semiR()
 end
 
 local function willHitR(dir, targetpos)
-
-    local a = player.pos+dir:perp2()*SpellR.width
-    local d = player.pos+dir:perp1()*SpellR.width
-    local b = a + dir*SpellR.range
-    local c = d + dir*SpellR.range
-    local f1 = targetpos:dot(a-b)
-    local f1min = a:dot(a-b)
-    local f1max = b:dot(a-b)
-    local f2 = targetpos:dot(a-d)
-    local f2min = a:dot(a-d)
-    local f2max = d:dot(a-d)
+    local a = player.pos + dir:perp2() * SpellR.width
+    local d = player.pos + dir:perp1() * SpellR.width
+    local b = a + dir * SpellR.range
+    local c = d + dir * SpellR.range
+    local f1 = targetpos:dot(a - b)
+    local f1min = a:dot(a - b)
+    local f1max = b:dot(a - b)
+    local f2 = targetpos:dot(a - d)
+    local f2min = a:dot(a - d)
+    local f2max = d:dot(a - d)
     return f1min < f1 and f1 < f1max and f2min < f2 and f2 < f2max
 end
 
@@ -687,7 +690,7 @@ local function comboR()
             end
             --table.insert(enemy_positions, )
         end
-        
+
         for i=0, 100 do
             local dir = vec2(math.cos(i*math.pi/200), math.sin(i*math.pi/200))
             local enemycount = 0
@@ -739,5 +742,75 @@ local function orbModes()
 end
 cb.add(cb.tick, orbModes)
 
+-- DEBUG
+local spellsWhereQWillHit = Set {
+    "FioraW",
+    "BelvethE",
+}
+
+local stasisBuffList = {
+    "chronorevive",
+    "bardrstasis",
+    "zhonyasringshield",
+    "lissandrarself",
+}
+
+local function autoQSpecialSpells(spell)
+    if menu.automatic.recall:get() and player.isRecalling then return end
+    if spell.owner.type ~= TYPE_HERO or spell.owner.team ~= TEAM_ENEMY then return end
+    if player:spellSlot(0).state ~= 0 then return end
+    if player.mana < player.manaCost0 then return end
+    if not menu.automatic.autoQLongCasts:get() then return end
+    --if spell.owner.type ~= TYPE_HERO then return end
+    if menu.info.debug:get() then
+        chat.print(spell.owner.charName .. " " .. spell.name)
+        chat.print(spell.windUpTime)
+    end
+    if spell.windUpTime >= 0.9 or spellsWhereQWillHit[spell.name] then --probably cant move away if only .1s left
+        player:castSpell("pos", 0, spell.owner.pos)
+        if menu.info.debug:get() then
+            chat.print("Casting Q on " .. spell.owner.charName .. " " .. spell.name)
+        end
+    end
+end
+cb.add(cb.spell, autoQSpecialSpells)
+
+local foundStasis = {}
+local function useQ(enemy)
+    foundStasis[enemy.charName] = false
+    if menu.automatic.recall:get() and player.isRecalling then return end
+    if player:spellSlot(0).state ~= 0 then return end
+    if player.mana < player.manaCost0 then return end
+    if enemy.pos:dist(player.pos) then
+        player:castSpell("pos", 0, enemy.pos)
+        if menu.info.debug:get() then
+            chat.print("Casting Q on " .. enemy.charName)
+        end
+    end
+end
+
+local function autoQBuffCheck()
+    if not menu.automatic.autoQStasis:get() then return end
+    for i = 0, objManager.enemies_n - 1 do
+        local enemy = objManager.enemies[i]
+        if enemy and enemy.isVisible and enemy.isAlive then
+            for _, buff in pairs(stasisBuffList) do
+                if enemy.buff[buff] then
+                    if not foundStasis[enemy.charName] then
+                        if menu.info.debug:get() then
+                            chat.print("Found" .. buff .. " on " .. enemy.charName)
+                        end
+                        foundStasis[enemy.charName] = true
+                        local remainingStasisTime = enemy.buff[buff].endTime - game.time
+                        if remainingStasisTime > 1 then
+                            common.delayedAction(useQ, remainingStasisTime - SpellQ.delay+0.01, { enemy })
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+cb.add(cb.tick, autoQBuffCheck)
 
 chat.print("Loaded Flofian Nami")

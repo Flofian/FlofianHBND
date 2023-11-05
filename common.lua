@@ -1,31 +1,34 @@
+local delayedActions, delayedActionsExecuter = {}, nil
 return {
-    isAlly = function (obj)
-        for i=0, objManager.allies_n-1 do
+    isAlly = function(obj)
+        for i = 0, objManager.allies_n - 1 do
             local ally = objManager.allies[i]
             if ally == obj then
                 return true
             end
         end
     end,
-    isEnemy = function (obj)
-        for i=0, objManager.enemies_n-1 do
+    isEnemy = function(obj)
+        for i = 0, objManager.enemies_n - 1 do
             local ally = objManager.enemies[i]
             if ally == obj then
                 return true
             end
         end
     end,
-    
-    isAeryReady = function ()
+
+    isAeryReady = function()
         if player.rune:get(0).name == "SummonAery" then
             return player.buff["assets/perks/styles/sorcery/summonaery/summonaery.lua"]
-        else return true
+        else
+            return true
         end
     end,
-    getIncomingDamage = function (obj,evade)
-        if not evade then 
+    getIncomingDamage = function(obj, evade)
+        if not evade then
             --print('Evade not found')
-            return end
+            return
+        end
         local ad_damage, ap_damage, true_damage, buff_list = evade.damage.count(obj)
         local incoming_damage = ad_damage + ap_damage + true_damage
         if incoming_damage > 0 then
@@ -54,16 +57,40 @@ return {
         return count
     end,
     isPlayerUnderTurret = function()
-        for i=0, objManager.turrets.size[TEAM_ENEMY]-1 do
+        for i = 0, objManager.turrets.size[TEAM_ENEMY] - 1 do
             local turret = objManager.turrets[TEAM_ENEMY][i]
             if turret.isAlive and turret.pos:dist(player) < 900 then
                 return true
             end
         end
-      
         return false
     end,
-    isValidTarget = function (obj)
+    isValidTarget = function(obj)
         return obj and obj.isVisible and not obj.isDead and obj.isTargetable
     end,
+    delayedAction = function(func, delay, args)  --delay in seconds
+        if not delayedActionsExecuter then
+            function delayedActionsExecuter()
+                for t, funcs in pairs(delayedActions) do
+                    if t <= os.clock() then
+                        for i = 1, #funcs do
+                            local f = funcs[i]
+                            if f and f.func then
+                                f.func(unpack(f.args or {}))
+                            end
+                        end
+                        delayedActions[t] = nil
+                    end
+                end
+            end
+
+            cb.add(cb.tick, delayedActionsExecuter)
+        end
+        local t = os.clock() + (delay or 0)
+        if delayedActions[t] then
+            delayedActions[t][#delayedActions[t] + 1] = { func = func, args = args }
+        else
+            delayedActions[t] = { { func = func, args = args } }
+        end
+    end
 }

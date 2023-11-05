@@ -29,6 +29,7 @@ Features:
 - Q Combo/Harass
 - W **2/3 Bounce Logic**
 - R Multi Hit (not great yet)
+- Auto Q on Special Spells (Stasis, Fiora W, Lux R)
 
 
 ## TODO:

@@ -99,6 +99,8 @@ menu.automatic:boolean("turret", "Dont use anything under enemy turret", true)
 menu.automatic:header("hAutoQ", "Auto Q")
 menu.automatic:dropdown("autoQCC", "Use Q on CC Mode", 2, { "Off", "Predicton", "Buff" })
 menu.automatic:dropdown("autoQGapclose", "Use Q on Gapclose", 3, { "Off", "Simple (NOT TESTED)", "Prediction" })
+menu.automatic:boolean("autoQLongCasts", "Use Q on Special Spells", true)
+menu.automatic:boolean("autoQStasis", "Use Q on Stasis", true)
 
 menu.automatic:header("hAutoW", "Auto W")
 menu.automatic:boolean("autoWHeal", "Use W for Heal under x ", true)
