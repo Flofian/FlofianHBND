@@ -29,7 +29,7 @@ Features:
 - Q Combo/Harass
 - W **2/3 Bounce Logic**
 - R Multi Hit (not great yet)
-- Auto Q on Special Spells (Stasis, Fiora W, Lux R)
+- Auto Q on Special Spells (Stasis, Spells with high cast time like Lux R, Fiora W)
 
 
 ## TODO:
@@ -40,6 +40,7 @@ Features:
 
 ### Nami:
 - Better R Prediction
+- All special Spells for auto q (panth r + shen r + tf r (destination), ekko r, teleport)
 
 
 ### In development:
